@@ -3,45 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Routine</title>
-    <style>
-        :root {
-            --bg-color: #f0f0f0;
-            --text-color: #333;
-            --primary-color: #4CAF50;
-            --secondary-color: #FF5722;
-            --heading-font: 'Arial', sans-serif;
-            --body-font: 'Helvetica', sans-serif;
-            --line-height: 1.5;
-        }
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--body-font);
-            line-height: var(--line-height);
-        }
-        h1, h2 {
-            font-family: var(--heading-font);
-        }
-        .primary {
-            background-color: var(--primary-color);
-            color: #fff;
-        }
-        .secondary {
-            background-color: var(--secondary-color);
-            color: #fff;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <title>Daily Routine App</title>
 </head>
 <body>
-    <h1>My Daily Routine</h1>
-    <div class="primary">
-        <h2>Morning</h2>
-        <p>Wake up at 7:00 AM.</p>
-    </div>
-    <div class="secondary">
-        <h2>Evening</h2>
-        <p>Wind down at 10:00 PM.</p>
-    </div>
+    <header>
+        <h1>My Daily Routine</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Morning</h2>
+            <ul>
+                <li>Wake up</li>
+                <li>Breakfast</li>
+                <li>Exercise</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Afternoon</h2>
+            <ul>
+                <li>Work on projects</li>
+                <li>Lunch break</li>
+                <li>Meetings</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Evening</h2>
+            <ul>
+                <li>Family time</li>
+                <li>Dinner</li>
+                <li>Reading</li>
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 My Daily Routine App</p>
+    </footer>
 </body>
 </html>
