@@ -1,4 +1,4 @@
-# routine-<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="ko">
 <head>
