@@ -1,12 +1,47 @@
-<style>
-    /* Example CSS styles */
-    :root {
-        --color-primary: blue;
-        --color-secondary: green;
-        --font-size: 16px;
-    }
-    .example {
-        background-color: var(--color-primary);
-        font-size: var(--font-size);
-    }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Routine</title>
+    <style>
+        :root {
+            --bg-color: #f0f0f0;
+            --text-color: #333;
+            --primary-color: #4CAF50;
+            --secondary-color: #FF5722;
+            --heading-font: 'Arial', sans-serif;
+            --body-font: 'Helvetica', sans-serif;
+            --line-height: 1.5;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--body-font);
+            line-height: var(--line-height);
+        }
+        h1, h2 {
+            font-family: var(--heading-font);
+        }
+        .primary {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+        .secondary {
+            background-color: var(--secondary-color);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Daily Routine</h1>
+    <div class="primary">
+        <h2>Morning</h2>
+        <p>Wake up at 7:00 AM.</p>
+    </div>
+    <div class="secondary">
+        <h2>Evening</h2>
+        <p>Wind down at 10:00 PM.</p>
+    </div>
+</body>
+</html>
