@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Daily Routine</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --ink: #0f0f0f;
+    --red: #e63022;
+    --muted: #999;
+    --border: #d8d6d0;
+    --surface: #ffffff;
+    --light: #f0ede8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding-bottom: 90px;
+  }
+
+/* ── LOCK SCREEN ── */
+#lockScreen {
+position: fixed; inset: 0;
+background: var(–ink);
+display: flex; flex-direction: column;
+align-items: center; justify-content: center;
+z-index: 1000;
+padding: 40px 24px;
+}
+#lockScreen.hidden { display: none; }
+.lock-title {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 56px; letter-spacing: 2px;
+color: var(–bg); line-height: 0.9;
+text-align: center; margin-bottom: 8px;
+}
+.lock-title span { color: var(–red); }
+.lock-sub {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 10px; letter-spacing: 2px;
+color: var(–muted); text-transform: uppercase;
+margin-bottom: 52px;
+}
+.lock-dots {
+display: flex; gap: 14px; margin-bottom: 40px;
+}
+.lock-dot {
+width: 14px; height: 14px; border-radius: 50%;
+border: 2px solid #3a3a3a;
+transition: all 0.15s;
+}
+.lock-dot.filled { background: var(–bg); border-color: var(–bg); }
+.lock-dot.error { background: var(–red); border-color: var(–red); }
+.lock-error {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 10px; letter-spacing: 2px;
+color: var(–red); text-transform: uppercase;
+height: 16px; margin-bottom: 32px;
+text-align: center;
+}
+.keypad {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 12px;
+width: 100%; max-width: 280px;
+}
+.key {
+aspect-ratio: 1;
+background: #1a1a1a;
+border: none; border-radius: 50%;
+color: var(–bg);
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 28px; letter-spacing: 1px;
+cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+transition: all 0.1s;
+-webkit-tap-highlight-color: transparent;
+}
+.key:active { background: #333; transform: scale(0.94); }
+.key.del { font-family: ‘IBM Plex Mono’, monospace; font-size: 16px; color: var(–muted); }
+.key.empty { background: transparent; pointer-events: none; }
+
+/* ── HEADER ── */
+.header { padding: 52px 24px 20px; border-bottom: 2px solid var(–ink); }
+.header-eyebrow { font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; letter-spacing: 3px; color: var(–muted); text-transform: uppercase; margin-bottom: 6px; }
+.header-title { font-family: ‘Bebas Neue’, sans-serif; font-size: 68px; line-height: 0.88; letter-spacing: 2px; }
+.header-title span { color: var(–red); }
+.header-quote { font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; color: var(–muted); margin-top: 16px; padding-left: 12px; border-left: 2px solid var(–red); line-height: 1.6; }
+
+/* ── PROGRESS ── */
+.progress-wrap { padding: 20px 24px 16px; border-bottom: 1px solid var(–border); }
+.progress-top { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 10px; }
+.progress-pct { font-family: ‘Bebas Neue’, sans-serif; font-size: 52px; line-height: 1; }
+.progress-msg { font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; color: var(–muted); text-align: right; line-height: 1.5; max-width: 180px; }
+.progress-track { height: 2px; background: var(–border); position: relative; }
+.progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(–ink); transition: width 0.5s cubic-bezier(.4,0,.2,1); width: 0%; }
+.progress-bottom { display: flex; justify-content: space-between; margin-top: 6px; }
+.progress-label { font-family: ‘IBM Plex Mono’, monospace; font-size: 9px; letter-spacing: 1.5px; color: var(–muted); text-transform: uppercase; }
+
+/* ── SYNC ── */
+.sync-bar { padding: 8px 24px; border-bottom: 1px solid var(–border); display: flex; align-items: center; gap: 8px; font-family: ‘IBM Plex Mono’, monospace; font-size: 9px; letter-spacing: 1px; color: var(–muted); text-transform: uppercase; }
+.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(–border); flex-shrink: 0; }
+.sync-dot.synced { background: var(–ink); }
+.sync-dot.syncing { background: var(–red); animation: blink 0.8s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* ── NAV ── */
+.nav { display: flex; border-bottom: 2px solid var(–ink); }
+.nav-btn { flex: 1; padding: 12px 8px; border: none; border-right: 1px solid var(–border); background: transparent; color: var(–muted); font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.15s; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn.active { background: var(–ink); color: var(–bg); }
+
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── ITEMS ── */
+.category { border-bottom: 1px solid var(–border); }
+.cat-label { padding: 14px 24px 6px; font-family: ‘IBM Plex Mono’, monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(–muted); }
+.item { display: flex; align-items: center; padding: 12px 24px; border-top: 1px solid var(–border); cursor: pointer; transition: background 0.1s; user-select: none; gap: 14px; }
+.item:active { background: var(–light); }
+.item.checked { background: var(–light); }
+.item-index { font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; color: var(–border); width: 18px; flex-shrink: 0; transition: color 0.15s; }
+.item.checked .item-index { color: var(–red); }
+.item-name { flex: 1; font-size: 15px; font-weight: 400; }
+.item.checked .item-name { text-decoration: line-through; color: var(–muted); }
+.item-sub { font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; color: var(–muted); }
+.item-box { width: 18px; height: 18px; border: 1.5px solid var(–border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 10px; font-family: ‘IBM Plex Mono’, monospace; transition: all 0.15s; }
+.item.checked .item-box { background: var(–ink); border-color: var(–ink); color: var(–bg); }
+
+/* ── STATS ── */
+.stats-month-nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid var(–border); }
+.month-label { font-family: ‘Bebas Neue’, sans-serif; font-size: 28px; letter-spacing: 1px; }
+.month-btn { width: 32px; height: 32px; background: transparent; border: 1.5px solid var(–border); color: var(–ink); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.month-btn:active { background: var(–ink); color: var(–bg); }
+.calendar { padding: 16px 24px; border-bottom: 1px solid var(–border); }
+.cal-header { display: grid; grid-template-columns: repeat(7,1fr); margin-bottom: 6px; }
+.cal-day-label { text-align: center; font-family: ‘IBM Plex Mono’, monospace; font-size: 9px; color: var(–muted); padding: 4px 0; }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+.cal-cell { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; }
+.cal-cell.today { border: 1.5px solid var(–red); color: var(–red); font-weight: 500; }
+.cal-cell.done-full { background: var(–ink); color: var(–bg); }
+.cal-cell.done-partial { background: var(–ink); color: var(–bg); opacity: 0.35; }
+.cal-cell.done-none { color: var(–border); }
+.cal-cell.future { color: var(–border); opacity: 0.5; }
+.stat-row { display: flex; align-items: baseline; justify-content: space-between; padding: 14px 24px; border-bottom: 1px solid var(–border); }
+.stat-name { font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(–muted); }
+.stat-val { font-family: ‘Bebas Neue’, sans-serif; font-size: 32px; letter-spacing: 1px; }
+.stat-val span { font-family: ‘IBM Plex Mono’, monospace; font-size: 12px; color: var(–muted); }
+.bar-section { padding: 16px 24px; }
+.bar-section-label { font-family: ‘IBM Plex Mono’, monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(–muted); margin-bottom: 14px; }
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.bar-name { font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; width: 80px; flex-shrink: 0; color: var(–muted); }
+.bar-track { flex: 1; height: 2px; background: var(–border); position: relative; }
+.bar-fill { position: absolute; left:0; top:0; height:100%; background: var(–ink); transition: width 0.6s cubic-bezier(.4,0,.2,1); }
+.bar-pct { font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; color: var(–muted); width: 32px; text-align: right; flex-shrink: 0; }
+
+/* ── SETTINGS ── */
+.setting-group { border-bottom: 1px solid var(–border); }
+.setting-group-label { padding: 14px 24px 6px; font-family: ‘IBM Plex Mono’, monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(–muted); }
+.setting-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-top: 1px solid var(–border); cursor: pointer; transition: background 0.1s; }
+.setting-row:active { background: var(–light); }
+.setting-row-name { font-size: 15px; font-weight: 400; }
+.setting-row-desc { font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; color: var(–muted); margin-top: 2px; }
+.setting-row-arrow { font-family: ‘IBM Plex Mono’, monospace; font-size: 14px; color: var(–border); }
+.setting-row.danger .setting-row-name { color: var(–red); }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(15,15,15,0.6); z-index: 300; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal { background: var(–bg); border-top: 2px solid var(–ink); padding: 24px; width: 100%; max-width: 430px; transform: translateY(20px); transition: transform 0.25s cubic-bezier(.4,0,.2,1); }
+.modal-overlay.show .modal { transform: translateY(0); }
+.modal-title { font-family: ‘Bebas Neue’, sans-serif; font-size: 32px; letter-spacing: 1px; margin-bottom: 6px; }
+.modal-desc { font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; color: var(–muted); margin-bottom: 20px; line-height: 1.6; }
+.modal-textarea { width: 100%; height: 110px; background: var(–surface); border: 1px solid var(–border); color: var(–ink); font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; padding: 12px; resize: none; outline: none; margin-bottom: 12px; }
+.modal-textarea:focus { border-color: var(–ink); }
+.btn-row { display: flex; gap: 8px; }
+.btn { flex: 1; padding: 13px; border: none; font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.15s; }
+.btn-primary { background: var(–ink); color: var(–bg); }
+.btn-primary:active { background: var(–red); }
+.btn-secondary { background: transparent; color: var(–ink); border: 1.5px solid var(–border); }
+.status-msg { font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; min-height: 36px; margin-bottom: 20px; line-height: 1.6; white-space: pre-line; }
+
+/* ── BOTTOM BAR ── */
+.bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; background: var(–ink); color: var(–bg); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+.bottom-msg { font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
+.bottom-count { font-family: ‘Bebas Neue’, sans-serif; font-size: 24px; letter-spacing: 1px; color: var(–red); }
+
+.toast { position: fixed; bottom: 72px; left: 50%; transform: translateX(-50%); background: var(–ink); color: var(–bg); font-family: ‘IBM Plex Mono’, monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 20px; opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap; z-index: 400; }
+.toast.show { opacity: 1; }
+.toast.error { background: var(–red); }
+</style>
+
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+
+<div id="lockScreen">
+  <div class="lock-title">DAILY<br><span>ROUTINE</span></div>
+  <div class="lock-sub">Enter passcode</div>
+  <div class="lock-dots">
+    <div class="lock-dot" id="d0"></div>
+    <div class="lock-dot" id="d1"></div>
+    <div class="lock-dot" id="d2"></div>
+    <div class="lock-dot" id="d3"></div>
+  </div>
+  <div class="lock-error" id="lockError"></div>
+  <div class="keypad">
+    <button class="key" onclick="keyPress('1')">1</button>
+    <button class="key" onclick="keyPress('2')">2</button>
+    <button class="key" onclick="keyPress('3')">3</button>
+    <button class="key" onclick="keyPress('4')">4</button>
+    <button class="key" onclick="keyPress('5')">5</button>
+    <button class="key" onclick="keyPress('6')">6</button>
+    <button class="key" onclick="keyPress('7')">7</button>
+    <button class="key" onclick="keyPress('8')">8</button>
+    <button class="key" onclick="keyPress('9')">9</button>
+    <button class="key empty"></button>
+    <button class="key" onclick="keyPress('0')">0</button>
+    <button class="key del" onclick="keyDel()">DEL</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+
+<div id="app">
+  <div class="header">
+    <div class="header-eyebrow" id="hDate"></div>
+    <div class="header-title">DAILY<br><span>ROUTINE</span></div>
+    <div class="header-quote">Rejection is redirection.<br>A promise to yourself.</div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <div class="progress-pct" id="pPct">0%</div>
+      <div class="progress-msg" id="pMsg">Start your day.</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="pFill"></div></div>
+    <div class="progress-bottom">
+      <div class="progress-label">Progress</div>
+      <div class="progress-label" id="pCount">0 / 9</div>
+    </div>
+  </div>
+
+  <div class="sync-bar">
+    <div class="sync-dot" id="syncDot"></div>
+    <span id="syncText">Local</span>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="switchView('today',this)">Today</button>
+    <button class="nav-btn" onclick="switchView('stats',this)">Stats</button>
+    <button class="nav-btn" onclick="switchView('settings',this)">Settings</button>
+  </div>
+
+  <div class="view active" id="view-today">
+    <div class="category">
+      <div class="cat-label">Training</div>
+      <div class="item" id="i-weight" onclick="toggle('weight')"><div class="item-index">01</div><div class="item-name">웨이트 트레이닝</div><div class="item-sub">60 MIN</div><div class="item-box" id="bx-weight"></div></div>
+      <div class="item" id="i-running" onclick="toggle('running')"><div class="item-index">02</div><div class="item-name">런닝</div><div class="item-sub">5 KM</div><div class="item-box" id="bx-running"></div></div>
+    </div>
+    <div class="category">
+      <div class="cat-label">Nutrition</div>
+      <div class="item" id="i-protein" onclick="toggle('protein')"><div class="item-index">03</div><div class="item-name">프로틴</div><div class="item-sub">48G+</div><div class="item-box" id="bx-protein"></div></div>
+      <div class="item" id="i-creatine" onclick="toggle('creatine')"><div class="item-index">04</div><div class="item-name">크레아틴</div><div class="item-sub">5G</div><div class="item-box" id="bx-creatine"></div></div>
+      <div class="item" id="i-vitamin" onclick="toggle('vitamin')"><div class="item-index">05</div><div class="item-name">종합비타민</div><div class="item-sub">1 TAB</div><div class="item-box" id="bx-vitamin"></div></div>
+    </div>
+    <div class="category">
+      <div class="cat-label">Recovery</div>
+      <div class="item" id="i-sleep" onclick="toggle('sleep')"><div class="item-index">06</div><div class="item-name">수면</div><div class="item-sub">8 HRS</div><div class="item-box" id="bx-sleep"></div></div>
+    </div>
+    <div class="category">
+      <div class="cat-label">Mind</div>
+      <div class="item" id="i-diary" onclick="toggle('diary')"><div class="item-index">07</div><div class="item-name">일기 쓰기</div><div class="item-sub"></div><div class="item-box" id="bx-diary"></div></div>
+      <div class="item" id="i-writing" onclick="toggle('writing')"><div class="item-index">08</div><div class="item-name">글쓰기</div><div class="item-sub"></div><div class="item-box" id="bx-writing"></div></div>
+      <div class="item" id="i-reading" onclick="toggle('reading')"><div class="item-index">09</div><div class="item-name">독서</div><div class="item-sub"></div><div class="item-box" id="bx-reading"></div></div>
+    </div>
+  </div>
+
+  <div class="view" id="view-stats">
+    <div class="stats-month-nav">
+      <button class="month-btn" onclick="changeMonth(-1)">&#8249;</button>
+      <div class="month-label" id="monthLabel"></div>
+      <button class="month-btn" onclick="changeMonth(1)">&#8250;</button>
+    </div>
+    <div class="calendar">
+      <div class="cal-header">
+        <div class="cal-day-label">SUN</div><div class="cal-day-label">MON</div><div class="cal-day-label">TUE</div>
+        <div class="cal-day-label">WED</div><div class="cal-day-label">THU</div><div class="cal-day-label">FRI</div><div class="cal-day-label">SAT</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div id="statRows"></div>
+    <div class="bar-section">
+      <div class="bar-section-label">Per Item Rate</div>
+      <div id="barRows"></div>
+    </div>
+  </div>
+
+  <div class="view" id="view-settings">
+    <div class="setting-group">
+      <div class="setting-group-label">Backup</div>
+      <div class="setting-row" onclick="exportData()"><div><div class="setting-row-name">데이터 내보내기</div><div class="setting-row-desc">전체 데이터 복사 보관</div></div><div class="setting-row-arrow">→</div></div>
+      <div class="setting-row" onclick="openImport()"><div><div class="setting-row-name">데이터 가져오기</div><div class="setting-row-desc">복사해둔 코드 붙여넣기</div></div><div class="setting-row-arrow">→</div></div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-label">Danger</div>
+      <div class="setting-row danger" onclick="resetAll()"><div><div class="setting-row-name">전체 초기화</div><div class="setting-row-desc">모든 기록 삭제 — 되돌릴 수 없음</div></div><div class="setting-row-arrow">→</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal-title">Export</div>
+    <div class="modal-desc">아래 코드를 전체 복사해서 카카오톡 나에게 보내기로 저장하세요.</div>
+    <textarea class="modal-textarea" id="exportText" readonly></textarea>
+    <div class="btn-row"><button class="btn btn-secondary" onclick="closeModal('exportModal')">Close</button><button class="btn btn-primary" onclick="copyExport()">Copy</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <div class="modal-title">Import</div>
+    <div class="modal-desc">복사해둔 코드를 아래에 붙여넣으세요.</div>
+    <textarea class="modal-textarea" id="importText" placeholder="Paste here..."></textarea>
+    <div class="btn-row"><button class="btn btn-secondary" onclick="closeModal('importModal')">Cancel</button><button class="btn btn-primary" onclick="doImport()">Import</button></div>
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <div class="bottom-msg" id="bottomMsg">Start your day</div>
+  <div class="bottom-count" id="bottomCount">0/9</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── PASSCODE ──
+const PASSCODE = '4320';
+let input = '';
+
+function keyPress(n) {
+  if (input.length >= 4) return;
+  input += n;
+  updateDots();
+  if (input.length === 4) {
+    setTimeout(() => {
+      if (input === PASSCODE) {
+        document.getElementById('lockScreen').classList.add('hidden');
+        sessionStorage.setItem('unlocked', '1');
+        initApp();
+      } else {
+        document.querySelectorAll('.lock-dot').forEach(d => d.classList.add('error'));
+        document.getElementById('lockError').textContent = 'Incorrect passcode';
+        setTimeout(() => {
+          input = '';
+          updateDots();
+          document.querySelectorAll('.lock-dot').forEach(d => { d.classList.remove('filled','error'); });
+          document.getElementById('lockError').textContent = '';
+        }, 800);
+      }
+    }, 120);
+  }
+}
+
+function keyDel() {
+  input = input.slice(0, -1);
+  updateDots();
+}
+
+function updateDots() {
+  for (let i = 0; i < 4; i++) {
+    const d = document.getElementById('d' + i);
+    d.classList.toggle('filled', i < input.length);
+  }
+}
+
+// Auto-unlock if already unlocked this session
+if (sessionStorage.getItem('unlocked') === '1') {
+  document.getElementById('lockScreen').classList.add('hidden');
+  document.addEventListener('DOMContentLoaded', initApp);
+}
+
+// ── APP ──
+const ROUTINES = [
+  {id:'weight',name:'Weight'},{id:'running',name:'Running'},
+  {id:'protein',name:'Protein'},{id:'creatine',name:'Creatine'},{id:'vitamin',name:'Vitamin'},
+  {id:'sleep',name:'Sleep'},
+  {id:'diary',name:'Diary'},{id:'writing',name:'Writing'},{id:'reading',name:'Reading'},
+];
+
+function loadData(){try{return JSON.parse(localStorage.getItem('routine_data')||'{}')}catch{return{}}}
+function saveData(d){localStorage.setItem('routine_data',JSON.stringify(d))}
+
+let data=loadData();
+const today=new Date(), todayKey=fmtDate(today);
+let statsYear=today.getFullYear(), statsMonth=today.getMonth();
+
+function fmtDate(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+
+function initApp() {
+  const dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  document.getElementById('hDate').textContent=
+    `Daily System — ${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')} ${dn[today.getDay()]}`;
+  renderToday();
+  setSyncStatus('','Local');
+}
+
+function getTodayRec(){if(!data[todayKey])data[todayKey]={};return data[todayKey]}
+
+function toggle(id){const rec=getTodayRec();rec[id]=!rec[id];saveData(data);renderToday();showToast(rec[id]?'Checked.':'Unchecked.');}
+
+const MSGS=['Start your day.','Keep going.','Halfway done.','Almost there.','Promise kept.'];
+const BMSGS=['Start your day','Keep going','Halfway done','Almost there','Promise kept'];
+
+function renderToday(){
+  const rec=getTodayRec(); let done=0;
+  ROUTINES.forEach(r=>{
+    const item=document.getElementById('i-'+r.id);
+    const bx=document.getElementById('bx-'+r.id);
+    if(rec[r.id]){item.classList.add('checked');bx.textContent='X';done++;}
+    else{item.classList.remove('checked');bx.textContent='';}
+  });
+  const pct=Math.round(done/ROUTINES.length*100);
+  document.getElementById('pFill').style.width=pct+'%';
+  document.getElementById('pPct').textContent=pct+'%';
+  document.getElementById('pCount').textContent=`${done} / ${ROUTINES.length}`;
+  const idx=done===0?0:done<3?1:done<6?2:done<ROUTINES.length?3:4;
+  document.getElementById('pMsg').textContent=MSGS[idx];
+  document.getElementById('bottomMsg').textContent=BMSGS[idx];
+  document.getElementById('bottomCount').textContent=`${done}/${ROUTINES.length}`;
+}
+
+function setSyncStatus(state,text){document.getElementById('syncDot').className='sync-dot '+(state||'');document.getElementById('syncText').textContent=text;}
+
+function exportData(){document.getElementById('exportText').value=JSON.stringify(data);openModal('exportModal');}
+function copyExport(){const t=document.getElementById('exportText');t.select();document.execCommand('copy');showToast('Copied.');}
+function openImport(){document.getElementById('importText').value='';openModal('importModal');}
+function doImport(){
+  try{const imp=JSON.parse(document.getElementById('importText').value.trim());data={...data,...imp};saveData(data);renderToday();closeModal('importModal');showToast('Imported.');}
+  catch{showToast('Invalid data.',true);}
+}
+function resetAll(){if(!confirm('Delete all data?'))return;data={};saveData(data);renderToday();showToast('Reset.');}
+
+function renderStats(){
+  const dim=new Date(statsYear,statsMonth+1,0).getDate();
+  const fd=new Date(statsYear,statsMonth,1).getDay();
+  document.getElementById('monthLabel').textContent=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][statsMonth]+' '+statsYear;
+  const todayStr=fmtDate(today);
+  const grid=document.getElementById('calGrid');grid.innerHTML='';
+  for(let i=0;i<fd;i++){const c=document.createElement('div');c.className='cal-cell';grid.appendChild(c);}
+  for(let d=1;d<=dim;d++){
+    const key=`${statsYear}-${String(statsMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const cell=document.createElement('div');cell.textContent=d;
+    const rec=data[key];const cnt=rec?Object.values(rec).filter(Boolean).length:0;
+    if(key>todayStr)cell.className='cal-cell future';
+    else if(key===todayStr)cell.className='cal-cell today';
+    else if(cnt>=ROUTINES.length)cell.className='cal-cell done-full';
+    else if(cnt>0)cell.className='cal-cell done-partial';
+    else cell.className='cal-cell done-none';
+    grid.appendChild(cell);
+  }
+  let totalDays=0,perfectDays=0,totalChecks=0;
+  const rc={};ROUTINES.forEach(r=>rc[r.id]=0);
+  for(let d=1;d<=dim;d++){
+    const key=`${statsYear}-${String(statsMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    if(key>todayStr)continue;totalDays++;
+    const rec=data[key];if(!rec)continue;
+    let cnt=0;ROUTINES.forEach(r=>{if(rec[r.id]){rc[r.id]++;cnt++;totalChecks++;}});
+    if(cnt===ROUTINES.length)perfectDays++;
+  }
+  const avgRate=totalDays>0?Math.round(totalChecks/(totalDays*ROUTINES.length)*100):0;
+  document.getElementById('statRows').innerHTML=`
+    <div class="stat-row"><div class="stat-name">Perfect Days</div><div class="stat-val">${perfectDays} <span>days</span></div></div>
+    <div class="stat-row"><div class="stat-name">Avg. Rate</div><div class="stat-val">${avgRate} <span>%</span></div></div>
+    <div class="stat-row"><div class="stat-name">Total Checks</div><div class="stat-val">${totalChecks} <span>times</span></div></div>`;
+  const bars=document.getElementById('barRows');bars.innerHTML='';
+  ROUTINES.forEach(r=>{const pct=totalDays>0?Math.round(rc[r.id]/totalDays*100):0;bars.innerHTML+=`<div class="bar-row"><div class="bar-name">${r.name}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><div class="bar-pct">${pct}%</div></div>`;});
+}
+
+function changeMonth(dir){statsMonth+=dir;if(statsMonth<0){statsMonth=11;statsYear--;}if(statsMonth>11){statsMonth=0;statsYear++;}renderStats();}
+
+function switchView(v,btn){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');btn.classList.add('active');
+  if(v==='stats')renderStats();
+}
+
+function openModal(id){document.getElementById(id).classList.add('show');}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.modal-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show');});});
+
+let toastTimer;
+function showToast(msg,isError=false){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(isError?' error':'');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1800);}
+
+// Init if already unlocked
+if(sessionStorage.getItem('unlocked')==='1'){initApp();}
+</script>
+
+</body>
+</html>
