@@ -4,630 +4,1895 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>AXIS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap');
+/* ── RESET & BASE ── */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{font-size:16px;}
+body{
+  font-family:'IBM Plex Sans KR','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  background:#f5f4f0;color:#0f0f0f;
+  max-width:430px;margin:0 auto;min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+input,button,select,textarea{font-family:inherit;}
 
+/* ── TOKENS ── */
 :root{
 –bg:#f5f4f0;
 –ink:#0f0f0f;
 –red:#e63022;
-–muted:#999999;
-–border:#d8d6d0;
+–muted:#888;
+–border:#d4d2cc;
 –surface:#ffffff;
-–light:#ece9e4;
+–light:#eceae4;
+–sidebar:#0f0f0f;
+–font-mono:‘IBM Plex Mono’,‘Courier New’,monospace;
+–font-display:‘Bebas Neue’,‘Arial Narrow’,Arial,sans-serif;
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{
-font-family:‘IBM Plex Sans KR’,‘Apple SD Gothic Neo’,sans-serif;
-background:var(–bg);color:var(–ink);
-max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;
-}
-.mono{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;}
-.bebas{font-family:‘Bebas Neue’,‘Arial Narrow’,sans-serif;}
 
-/* SPLASH */
-#splash{position:fixed;inset:0;background:#0f0f0f;z-index:9999;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:60px 44px;transition:opacity .6s;}
+/* ── SPLASH ── */
+#splash{
+position:fixed;inset:0;background:#0f0f0f;z-index:9999;
+display:flex;flex-direction:column;align-items:flex-start;
+justify-content:center;padding:60px 44px;
+transition:opacity .6s ease;
+}
 #splash.out{opacity:0;pointer-events:none;}
-.spc{position:absolute;width:18px;height:18px;border-color:#252525;border-style:solid;}
-.spc.tl{top:36px;left:36px;border-width:1px 0 0 1px;}
-.spc.tr{top:36px;right:36px;border-width:1px 1px 0 0;}
-.spc.bl{bottom:36px;left:36px;border-width:0 0 1px 1px;}
-.spc.br{bottom:36px;right:36px;border-width:0 1px 1px 0;}
-.sp-top{position:absolute;top:44px;left:50%;transform:translateX(-50%);font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;letter-spacing:3px;color:#2e2e2e;text-transform:uppercase;white-space:nowrap;}
-.sp-welcome{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:10px;letter-spacing:3px;color:#4a4a4a;text-transform:uppercase;margin-bottom:14px;}
-.sp-title{font-family:‘Bebas Neue’,‘Arial Narrow’,sans-serif;font-size:108px;line-height:.84;letter-spacing:4px;color:#f0ede8;margin-bottom:28px;}
-.sp-line{width:36px;height:2px;background:#e63022;margin-bottom:26px;}
-.sp-slogan span{display:block;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:12px;color:#f0ede8;line-height:2.3;letter-spacing:1px;}
-.sp-bar-wrap{position:absolute;bottom:56px;left:44px;right:44px;}
-.sp-bar-row{display:flex;justify-content:space-between;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;letter-spacing:2px;color:#2e2e2e;text-transform:uppercase;margin-bottom:7px;}
-.sp-track{height:1px;background:#1c1c1c;overflow:hidden;}
-.sp-fill{height:100%;background:#e63022;width:0%;transition:width .15s linear;}
+.sp-corner{position:absolute;width:18px;height:18px;border-color:#222;border-style:solid;}
+.sp-corner.tl{top:36px;left:36px;border-width:1px 0 0 1px;}
+.sp-corner.tr{top:36px;right:36px;border-width:1px 1px 0 0;}
+.sp-corner.bl{bottom:36px;left:36px;border-width:0 0 1px 1px;}
+.sp-corner.br{bottom:36px;right:36px;border-width:0 1px 1px 0;}
+.sp-sub{font-family:var(–font-mono);font-size:9px;letter-spacing:3px;color:#444;text-transform:uppercase;margin-bottom:12px;}
+.sp-logo{font-family:var(–font-display);font-size:110px;line-height:.84;letter-spacing:4px;color:#f0ede8;margin-bottom:28px;}
+.sp-line{width:36px;height:2px;background:#e63022;margin-bottom:24px;}
+.sp-slogan span{display:block;font-family:var(–font-mono);font-size:12px;color:#f0ede8;line-height:2.4;letter-spacing:1px;}
+.sp-bar{position:absolute;bottom:56px;left:44px;right:44px;}
+.sp-bar-row{display:flex;justify-content:space-between;font-family:var(–font-mono);font-size:8px;letter-spacing:2px;color:#333;text-transform:uppercase;margin-bottom:7px;}
+.sp-track{height:1px;background:#1c1c1c;}
+.sp-fill{height:100%;background:#e63022;width:0;transition:width .1s linear;}
 
-/* LOCK */
-#lock{position:fixed;inset:0;background:#0f0f0f;z-index:8888;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;}
-#lock.gone{display:none;}
-.lk-title{font-family:‘Bebas Neue’,‘Arial Narrow’,sans-serif;font-size:52px;letter-spacing:2px;color:#f0ede8;line-height:.9;text-align:center;margin-bottom:6px;}
-.lk-title span{color:#e63022;}
-.lk-sub{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;letter-spacing:2px;color:#555;text-transform:uppercase;margin-bottom:48px;}
-.lk-dots{display:flex;gap:14px;margin-bottom:36px;}
-.lk-dot{width:13px;height:13px;border-radius:50%;border:2px solid #333;transition:all .15s;}
-.lk-dot.on{background:#f0ede8;border-color:#f0ede8;}
-.lk-dot.err{background:#e63022;border-color:#e63022;}
-.lk-err{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;letter-spacing:2px;color:#e63022;text-transform:uppercase;height:14px;margin-bottom:28px;text-align:center;}
-.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:270px;}
-.k{aspect-ratio:1;background:#1a1a1a;border:none;border-radius:50%;color:#f0ede8;font-family:‘Bebas Neue’,‘Arial Narrow’,sans-serif;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s;}
-.k:active{background:#2e2e2e;transform:scale(.93);}
-.k.del{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:14px;color:#555;}
-.k.emp{background:transparent;pointer-events:none;}
+/* ── LOGIN ── */
+#login{
+position:fixed;inset:0;background:#0f0f0f;z-index:8000;
+display:none;flex-direction:column;align-items:flex-start;
+justify-content:center;padding:60px 44px;
+}
+#login.show{display:flex;}
+.ls-corner{position:absolute;width:18px;height:18px;border-color:#222;border-style:solid;}
+.ls-corner.tl{top:36px;left:36px;border-width:1px 0 0 1px;}
+.ls-corner.tr{top:36px;right:36px;border-width:1px 1px 0 0;}
+.ls-corner.bl{bottom:36px;left:36px;border-width:0 0 1px 1px;}
+.ls-corner.br{bottom:36px;right:36px;border-width:0 1px 1px 0;}
+.ls-logo{font-family:var(–font-display);font-size:88px;line-height:.84;letter-spacing:4px;color:#f0ede8;margin-bottom:16px;}
+.ls-line{width:36px;height:2px;background:#e63022;margin-bottom:22px;}
+.ls-desc{font-family:var(–font-mono);font-size:11px;color:#444;line-height:2;margin-bottom:44px;}
+.ls-google{
+width:100%;background:#f5f4f0;color:#0f0f0f;border:none;
+font-family:var(–font-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;
+padding:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;
+margin-bottom:10px;
+}
+.ls-google:active{background:#e63022;color:#fff;}
+.ls-google svg{width:18px;height:18px;flex-shrink:0;}
+.ls-offline{
+width:100%;background:transparent;color:#444;border:1px solid #222;
+font-family:var(–font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;
+padding:13px;cursor:pointer;
+}
+.ls-offline:active{border-color:#555;}
+.ls-userbar{position:absolute;bottom:44px;left:44px;right:44px;display:none;justify-content:space-between;align-items:center;}
+.ls-userbar.show{display:flex;}
+.ls-username{font-family:var(–font-mono);font-size:9px;color:#444;letter-spacing:1px;}
+.ls-logout{font-family:var(–font-mono);font-size:9px;color:#444;background:none;border:none;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
 
-/* APP */
-#app{padding-bottom:68px;}
+/* ── ONBOARDING ── */
+#ob{position:fixed;inset:0;background:#f5f4f0;z-index:7000;display:none;flex-direction:column;}
+#ob.show{display:flex;}
+.ob-progress{height:2px;background:#d4d2cc;}
+.ob-progress-fill{height:100%;background:#0f0f0f;transition:width .4s ease;}
+.ob-body{flex:1;padding:52px 28px 16px;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.ob-step{font-family:var(–font-mono);font-size:8px;letter-spacing:3px;color:#888;text-transform:uppercase;margin-bottom:10px;}
+.ob-title{font-family:var(–font-display);font-size:52px;line-height:.88;letter-spacing:2px;color:#0f0f0f;margin-bottom:10px;}
+.ob-title span{color:#e63022;}
+.ob-subtitle{font-family:var(–font-mono);font-size:10px;color:#888;margin-bottom:24px;line-height:1.8;}
+.ob-label{font-family:var(–font-mono);font-size:8px;letter-spacing:2px;color:#888;text-transform:uppercase;margin-bottom:6px;margin-top:14px;display:block;}
+.ob-input{
+width:100%;background:#fff;border:none;border-bottom:2px solid #0f0f0f;
+color:#0f0f0f;font-family:var(–font-mono);font-size:16px;
+padding:12px 4px;outline:none;
+}
+.ob-input::placeholder{color:#bbb;}
+.ob-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.ob-chip{
+font-family:var(–font-mono);font-size:10px;padding:8px 16px;
+border:1.5px solid #d4d2cc;color:#888;cursor:pointer;
+background:#f5f4f0;transition:all .15s;
+}
+.ob-chip.on{background:#0f0f0f;border-color:#0f0f0f;color:#f5f4f0;}
+.ob-add-cat{
+font-family:var(–font-mono);font-size:9px;letter-spacing:1px;color:#888;
+text-transform:uppercase;display:flex;align-items:center;gap:8px;
+cursor:pointer;padding:6px 0;margin-top:4px;
+}
+/* Day tabs for ob step 3 */
+.ob-day-tabs{display:flex;gap:3px;margin-bottom:12px;}
+.ob-day-tab{
+flex:1;padding:8px 2px;border:1.5px solid #d4d2cc;background:#f5f4f0;
+color:#888;font-family:var(–font-mono);font-size:8px;letter-spacing:.5px;
+text-transform:uppercase;cursor:pointer;text-align:center;transition:all .15s;
+}
+.ob-day-tab .day-letter{font-size:9px;font-weight:500;display:block;margin-bottom:3px;}
+.ob-day-tab .day-status{font-size:7px;display:block;}
+.ob-day-tab.active{background:#0f0f0f;border-color:#0f0f0f;color:#f5f4f0;}
+.ob-day-tab.rest-day .day-status{color:#e63022;}
+.ob-day-tab.active.rest-day .day-status{color:#e63022;}
+.ob-ex-box{background:#fff;border:1px solid #d4d2cc;padding:12px 14px;min-height:80px;margin-bottom:10px;}
+.ob-ex-box-title{font-family:var(–font-mono);font-size:8px;letter-spacing:2px;color:#888;text-transform:uppercase;margin-bottom:10px;}
+.ob-ex-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eceae4;}
+.ob-ex-row:last-child{border-bottom:none;}
+.ob-ex-name{font-size:13px;color:#0f0f0f;}
+.ob-ex-meta{font-family:var(–font-mono);font-size:9px;color:#888;}
+.ob-ex-del{background:none;border:none;color:#bbb;font-size:16px;cursor:pointer;padding:0 4px;line-height:1;}
+.ob-ex-del:active{color:#e63022;}
+.ob-add-ex{
+font-family:var(–font-mono);font-size:9px;letter-spacing:1px;color:#888;
+text-transform:uppercase;display:flex;align-items:center;gap:6px;
+cursor:pointer;padding:4px 0;
+}
+.ob-rest-toggle{
+display:flex;align-items:center;justify-content:space-between;
+padding:10px 0;border-top:1px solid #d4d2cc;margin-top:8px;
+}
+.ob-rest-label{font-family:var(–font-mono);font-size:9px;color:#888;letter-spacing:1px;text-transform:uppercase;}
+.ob-foot{display:flex;justify-content:space-between;align-items:center;padding:14px 28px 40px;}
+.ob-skip{font-family:var(–font-mono);font-size:9px;letter-spacing:1px;color:#888;text-transform:uppercase;cursor:pointer;padding:8px 0;}
+.ob-next{
+background:#0f0f0f;color:#f5f4f0;border:none;
+font-family:var(–font-mono);font-size:9px;letter-spacing:2px;
+text-transform:uppercase;padding:14px 24px;cursor:pointer;
+}
+.ob-next:active{background:#e63022;}
 
-/* HEADER */
-.hdr-block{display:flex;border-bottom:2px solid #0f0f0f;}
-.hdr-main{flex:1;padding:44px 22px 18px;overflow:hidden;min-width:0;}
-.hdr-eye1{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;letter-spacing:2px;color:#999;text-transform:uppercase;margin-bottom:2px;}
-.hdr-eye2{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;letter-spacing:2px;color:#999;text-transform:uppercase;margin-bottom:8px;}
-.hdr-title{font-family:‘Bebas Neue’,‘Arial Narrow’,sans-serif;font-size:60px;line-height:.88;letter-spacing:2px;color:#0f0f0f;}
+/* ── WELCOME ── */
+#ob-welcome{
+position:fixed;inset:0;background:#0f0f0f;z-index:7001;
+display:none;flex-direction:column;align-items:flex-start;
+justify-content:center;padding:60px 44px;
+}
+#ob-welcome.show{display:flex;}
+.ow-corner{position:absolute;width:18px;height:18px;border-color:#222;border-style:solid;}
+.ow-corner.tl{top:36px;left:36px;border-width:1px 0 0 1px;}
+.ow-corner.tr{top:36px;right:36px;border-width:1px 1px 0 0;}
+.ow-corner.bl{bottom:36px;left:36px;border-width:0 0 1px 1px;}
+.ow-corner.br{bottom:36px;right:36px;border-width:0 1px 1px 0;}
+.ow-pre{font-family:var(–font-mono);font-size:9px;letter-spacing:3px;color:#333;text-transform:uppercase;margin-bottom:10px;}
+.ow-logo{font-family:var(–font-display);font-size:110px;line-height:.84;letter-spacing:4px;color:#f0ede8;margin-bottom:28px;}
+.ow-line{width:36px;height:2px;background:#e63022;margin-bottom:22px;}
+.ow-name{font-family:var(–font-mono);font-size:18px;color:#f0ede8;letter-spacing:2px;margin-bottom:8px;}
+.ow-slogan{font-family:var(–font-mono);font-size:11px;color:#333;line-height:2.2;}
+.ow-btn{
+position:absolute;bottom:60px;left:44px;right:44px;
+background:#e63022;color:#f0ede8;border:none;
+font-family:var(–font-mono);font-size:10px;letter-spacing:3px;
+text-transform:uppercase;padding:16px;cursor:pointer;text-align:center;
+}
+.ow-btn:active{background:#c42518;}
+
+/* ── PWA GUIDE ── */
+#pwa{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:6000;display:none;align-items:flex-end;justify-content:center;}
+#pwa.show{display:flex;}
+.pwa-card{background:#f5f4f0;border-top:2px solid #0f0f0f;padding:24px 24px 40px;width:100%;max-width:430px;}
+.pwa-title{font-family:var(–font-display);font-size:28px;letter-spacing:1px;color:#0f0f0f;margin-bottom:6px;}
+.pwa-desc{font-family:var(–font-mono);font-size:10px;color:#888;line-height:1.8;margin-bottom:16px;}
+.pwa-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+.pwa-step{display:flex;align-items:center;gap:10px;}
+.pwa-num{width:20px;height:20px;background:#0f0f0f;color:#f5f4f0;font-family:var(–font-mono);font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pwa-step-text{font-family:var(–font-mono);font-size:10px;color:#0f0f0f;}
+.pwa-close{width:100%;background:#0f0f0f;color:#f5f4f0;border:none;font-family:var(–font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:13px;cursor:pointer;}
+
+/* ── APP ── */
+#app{display:none;padding-bottom:56px;}
+#app.show{display:block;}
+
+/* ── HEADER ── */
+.hdr{display:flex;border-bottom:2px solid #0f0f0f;}
+.hdr-main{flex:1;padding:44px 22px 18px;min-width:0;overflow:hidden;}
+.hdr-eye1{font-family:var(–font-mono);font-size:8px;letter-spacing:2px;color:#aaa;text-transform:uppercase;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hdr-eye2{font-family:var(–font-mono);font-size:8px;letter-spacing:2px;color:#aaa;text-transform:uppercase;margin-bottom:8px;}
+.hdr-title{font-family:var(–font-display);font-size:58px;line-height:.88;letter-spacing:2px;color:#0f0f0f;}
 .hdr-title span{color:#e63022;}
-.hdr-quote{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:10px;color:#999;margin-top:14px;padding-left:10px;border-left:2px solid #e63022;line-height:1.65;}
+.hdr-quote{font-family:var(–font-mono);font-size:9px;color:#aaa;margin-top:12px;padding-left:10px;border-left:2px solid #e63022;line-height:1.7;}
+.hdr-sidebar{width:44px;flex-shrink:0;background:#0f0f0f;display:flex;flex-direction:column;}
+.sb-tab{
+writing-mode:vertical-rl;transform:rotate(180deg);
+font-family:var(–font-mono);font-size:7px;letter-spacing:2px;text-transform:uppercase;
+color:#444;padding:14px 0;cursor:pointer;border-left:2px solid transparent;
+flex:1;display:flex;align-items:center;justify-content:center;transition:all .15s;
+}
+.sb-tab.on{color:#f0ede8;border-left-color:#e63022;}
+.sb-divider{width:18px;height:1px;background:#1e1e1e;margin:0 auto;}
 
-/* SIDEBAR - header only */
-.hdr-sb{width:46px;flex-shrink:0;background:#0f0f0f;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.sb-tab{writing-mode:vertical-rl;transform:rotate(180deg);font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#444;padding:16px 6px;cursor:pointer;border-left:2px solid transparent;width:100%;text-align:center;transition:all .15s;flex:1;display:flex;align-items:center;justify-content:center;}
-.sb-tab.on{color:#f0ede8;border-left:2px solid #e63022;}
-.sb-div{width:20px;height:1px;background:#222;}
+/* ── DATE NAV ── */
+.date-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 22px;border-bottom:1px solid #d4d2cc;}
+.dn-btn{width:28px;height:28px;background:transparent;border:1.5px solid #d4d2cc;color:#0f0f0f;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.dn-btn:disabled{opacity:.2;cursor:default;}
+.dn-label{font-family:var(–font-mono);font-size:10px;letter-spacing:1px;color:#0f0f0f;}
+.dn-label.today{color:#e63022;}
 
-/* DATE NAV */
-.date-nav{display:flex;align-items:center;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #d8d6d0;}
-.dn-btn{width:26px;height:26px;background:transparent;border:1.5px solid #d8d6d0;color:#0f0f0f;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.dn-btn:disabled{opacity:.25;cursor:default;}
-.dn-lbl{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:10px;letter-spacing:1px;color:#0f0f0f;}
-.dn-lbl.today{color:#e63022;}
+/* ── PROGRESS BAR ── */
+.prog-wrap{padding:16px 22px 12px;border-bottom:1px solid #d4d2cc;}
+.prog-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:8px;}
+.prog-pct{font-family:var(–font-display);font-size:52px;line-height:1;color:#0f0f0f;}
+.prog-msg{font-family:var(–font-mono);font-size:9px;color:#888;text-align:right;line-height:1.7;max-width:160px;}
+.prog-track{height:2px;background:#d4d2cc;}
+.prog-fill{height:100%;background:#0f0f0f;transition:width .5s ease;width:0;}
+.prog-bottom{display:flex;justify-content:space-between;margin-top:5px;}
+.prog-label{font-family:var(–font-mono);font-size:8px;letter-spacing:1.5px;color:#888;text-transform:uppercase;}
 
-/* PROGRESS */
-.prog-wrap{padding:18px 22px 14px;border-bottom:1px solid #d8d6d0;}
-.prog-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:9px;}
-.prog-pct{font-family:‘Bebas Neue’,‘Arial Narrow’,sans-serif;font-size:50px;line-height:1;color:#0f0f0f;}
-.prog-msg{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;color:#999;text-align:right;line-height:1.5;max-width:170px;}
-.prog-track{height:2px;background:#d8d6d0;position:relative;}
-.prog-fill{position:absolute;left:0;top:0;height:100%;background:#0f0f0f;transition:width .5s;}
-.prog-bot{display:flex;justify-content:space-between;margin-top:5px;}
-.prog-lbl{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;letter-spacing:1.5px;color:#999;text-transform:uppercase;}
-
-/* TAB NAV */
+/* ── TABS ── */
 .tab-nav{display:flex;border-bottom:2px solid #0f0f0f;}
-.tb{flex:1;padding:11px 6px;border:none;border-right:1px solid #d8d6d0;background:transparent;color:#999;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .15s;}
-.tb:last-child{border-right:none;}
-.tb.on{background:#0f0f0f;color:#f5f4f0;}
+.tab-btn{
+flex:1;padding:10px 4px;border:none;border-right:1px solid #d4d2cc;
+background:transparent;color:#888;
+font-family:var(–font-mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;
+cursor:pointer;transition:all .15s;
+}
+.tab-btn:last-child{border-right:none;}
+.tab-btn.on{background:#0f0f0f;color:#f5f4f0;}
 .view{display:none;}
 .view.on{display:block;}
 
-/* CATEGORIES */
-.cat-block{border-bottom:1px solid #d8d6d0;}
-.cat-hdr{padding:11px 22px 4px;}
-.cat-name{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#999;}
-.row{display:flex;align-items:center;padding:11px 22px;border-top:1px solid #d8d6d0;cursor:pointer;user-select:none;gap:11px;transition:background .1s;}
-.row:active,.row.done{background:#ece9e4;}
-.row-num{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;color:#d8d6d0;width:18px;flex-shrink:0;}
-.row.done .row-num{color:#e63022;}
-.row-name{flex:1;font-size:14px;color:#0f0f0f;}
-.row.done .row-name{text-decoration:line-through;color:#999;}
-.row-sub{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;color:#999;white-space:nowrap;}
-.row-box{width:17px;height:17px;border:1.5px solid #d8d6d0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;color:#f5f4f0;}
-.row.done .row-box{background:#0f0f0f;border-color:#0f0f0f;}
-.add-row{display:flex;align-items:center;padding:10px 22px;border-top:1px solid #d8d6d0;cursor:pointer;gap:11px;}
-.add-row:active{background:#ece9e4;}
-.add-icon{width:17px;height:17px;border:1.5px dashed #d8d6d0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#d8d6d0;flex-shrink:0;}
-.add-txt{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#999;}
+/* ── ROUTINE LIST ── */
+.cat-block{border-bottom:1px solid #d4d2cc;}
+.cat-header{padding:10px 22px 3px;font-family:var(–font-mono);font-size:7px;letter-spacing:3px;text-transform:uppercase;color:#aaa;}
+.r-row{
+display:flex;align-items:center;padding:12px 22px;
+border-top:1px solid #d4d2cc;cursor:pointer;user-select:none;gap:10px;
+transition:background .1s;
+}
+.r-row:active,.r-row.done{background:#eceae4;}
+.r-num{font-family:var(–font-mono);font-size:9px;color:#d4d2cc;width:18px;flex-shrink:0;}
+.r-row.done .r-num{color:#e63022;}
+.r-name{flex:1;font-size:14px;color:#0f0f0f;font-weight:400;}
+.r-row.done .r-name{text-decoration:line-through;color:#aaa;}
+.r-sub{font-family:var(–font-mono);font-size:9px;color:#aaa;white-space:nowrap;}
+.r-badge{font-family:var(–font-mono);font-size:7px;color:#aaa;border:1px solid #d4d2cc;padding:2px 5px;white-space:nowrap;}
+.r-check{width:17px;height:17px;border:1.5px solid #d4d2cc;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#f5f4f0;}
+.r-row.done .r-check{background:#0f0f0f;border-color:#0f0f0f;}
+.add-row{display:flex;align-items:center;padding:11px 22px;border-top:1px solid #d4d2cc;cursor:pointer;gap:10px;}
+.add-row:active{background:#eceae4;}
+.add-icon{width:17px;height:17px;border:1.5px dashed #d4d2cc;display:flex;align-items:center;justify-content:center;font-size:13px;color:#ccc;flex-shrink:0;}
+.add-text{font-family:var(–font-mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#aaa;}
 
-/* STATS */
-.mo-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid #d8d6d0;}
-.mo-lbl{font-family:‘Bebas Neue’,‘Arial Narrow’,sans-serif;font-size:26px;letter-spacing:1px;color:#0f0f0f;}
-.mo-btn{width:30px;height:30px;background:transparent;border:1.5px solid #d8d6d0;color:#0f0f0f;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+/* ── MEMO ── */
+.memo-section{padding:12px 22px;border-bottom:1px solid #d4d2cc;}
+.memo-label{font-family:var(–font-mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:6px;}
+.memo-input{
+width:100%;background:#fff;border:1px solid #d4d2cc;
+color:#0f0f0f;font-family:var(–font-mono);font-size:12px;
+padding:10px 12px;outline:none;resize:none;
+}
+.memo-input:focus{border-color:#0f0f0f;}
+
+/* ── STATS ── */
+.streak-section{padding:16px 22px;border-bottom:1px solid #d4d2cc;background:#fff;}
+.streak-row{display:flex;align-items:baseline;gap:8px;margin-bottom:4px;}
+.streak-num{font-family:var(–font-display);font-size:60px;line-height:1;color:#e63022;}
+.streak-unit{font-family:var(–font-mono);font-size:10px;letter-spacing:2px;color:#888;text-transform:uppercase;}
+.streak-msg{font-family:var(–font-mono);font-size:10px;color:#0f0f0f;letter-spacing:.5px;}
+.streak-best{font-family:var(–font-mono);font-size:9px;color:#aaa;margin-top:3px;}
+.mo-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 22px;border-bottom:1px solid #d4d2cc;}
+.mo-label{font-family:var(–font-display);font-size:24px;letter-spacing:1px;color:#0f0f0f;}
+.mo-btn{width:28px;height:28px;background:transparent;border:1.5px solid #d4d2cc;color:#0f0f0f;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .mo-btn:active{background:#0f0f0f;color:#f5f4f0;}
-.cal-wrap{padding:14px 22px;border-bottom:1px solid #d8d6d0;}
-.cal-days{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px;}
-.cal-dlbl{text-align:center;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;color:#999;padding:3px 0;}
+.cal-wrap{padding:12px 22px;border-bottom:1px solid #d4d2cc;}
+.cal-days-row{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px;}
+.cal-day{text-align:center;font-family:var(–font-mono);font-size:8px;color:#aaa;padding:2px 0;}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
-.cc{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:10px;border-radius:2px;cursor:pointer;}
-.cc.today{border:1.5px solid #e63022;color:#e63022;font-weight:700;}
-.cc.p0{color:#d8d6d0;}
-.cc.p10{background:#e6e6e6;color:#888;}
+.cc{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:var(–font-mono);font-size:9px;border-radius:2px;}
+.cc.empty{color:transparent;}
+.cc.today{border:1.5px solid #e63022;color:#e63022;font-weight:600;}
+.cc.p0{color:#d4d2cc;}
 .cc.p30{background:#f4a261;color:#fff;}
-.cc.p50{background:#e76f51;color:#fff;}
 .cc.p70{background:#52b788;color:#fff;}
-.cc.p90{background:#2d6a4f;color:#fff;}
-.cc.p100{background:#0f0f0f;color:#f0ede8;}
-.cc.fut{color:#d8d6d0;opacity:.4;cursor:default;}
-.cc.trained{background:#0f0f0f;color:#f0ede8;}
-.stat-row{display:flex;align-items:baseline;justify-content:space-between;padding:13px 22px;border-bottom:1px solid #d8d6d0;}
-.stat-lbl{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#999;}
-.stat-val{font-family:‘Bebas Neue’,‘Arial Narrow’,sans-serif;font-size:30px;letter-spacing:1px;color:#0f0f0f;}
-.stat-val small{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:11px;color:#999;}
-.bar-sec{padding:14px 22px;}
-.bar-sec-lbl{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:12px;}
-.bar-row{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
-.bar-nm{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;width:76px;flex-shrink:0;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.bar-track{flex:1;height:2px;background:#d8d6d0;position:relative;}
+.cc.p100{background:#0f0f0f;color:#f5f4f0;}
+.cc.future{color:#d4d2cc;opacity:.4;}
+.cc.trained{background:#0f0f0f;color:#f5f4f0;}
+.weekly-section{padding:14px 22px;border-bottom:1px solid #d4d2cc;}
+.weekly-label{font-family:var(–font-mono);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#aaa;margin-bottom:10px;}
+.weekly-grid{display:flex;border:1px solid #d4d2cc;}
+.weekly-cell{flex:1;padding:10px 6px;border-right:1px solid #d4d2cc;text-align:center;}
+.weekly-cell:last-child{border-right:none;}
+.weekly-val{font-family:var(–font-display);font-size:30px;color:#0f0f0f;line-height:1;}
+.weekly-cell-label{font-family:var(–font-mono);font-size:7px;letter-spacing:1px;text-transform:uppercase;color:#aaa;margin-top:3px;}
+.weekly-best{margin-top:10px;padding:10px 12px;background:#fff;border:1px solid #d4d2cc;}
+.weekly-best-label{font-family:var(–font-mono);font-size:7px;letter-spacing:2px;color:#aaa;text-transform:uppercase;margin-bottom:4px;}
+.weekly-best-val{font-size:13px;color:#0f0f0f;}
+.weekly-best-val span{color:#e63022;}
+.stat-row{display:flex;align-items:baseline;justify-content:space-between;padding:12px 22px;border-bottom:1px solid #d4d2cc;}
+.stat-label{font-family:var(–font-mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#888;}
+.stat-val{font-family:var(–font-display);font-size:30px;letter-spacing:1px;color:#0f0f0f;}
+.stat-val small{font-family:var(–font-mono);font-size:11px;color:#aaa;}
+.bar-section{padding:14px 22px;}
+.bar-section-label{font-family:var(–font-mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:12px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.bar-name{font-family:var(–font-mono);font-size:9px;width:72px;flex-shrink:0;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bar-track{flex:1;height:2px;background:#d4d2cc;position:relative;}
 .bar-fill{position:absolute;left:0;top:0;height:100%;background:#0f0f0f;}
-.bar-pct{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;color:#999;width:30px;text-align:right;flex-shrink:0;}
+.bar-pct{font-family:var(–font-mono);font-size:9px;color:#aaa;width:30px;text-align:right;flex-shrink:0;}
 
-/* WORKOUT LOG */
-.wlog{padding:16px 22px;border-bottom:1px solid #d8d6d0;}
-.wlog-title{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#999;margin-bottom:14px;}
-.wf{margin-bottom:13px;}
-.wf-lbl{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:6px;}
-.chips{display:flex;flex-wrap:wrap;gap:5px;}
-.chip{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:10px;padding:5px 11px;border:1.5px solid #d8d6d0;cursor:pointer;transition:all .15s;color:#999;background:#f5f4f0;}
-.chip.on{background:#0f0f0f;border-color:#0f0f0f;color:#f5f4f0;}
-.wlog-input{width:100%;background:#fff;border:1px solid #d8d6d0;color:#0f0f0f;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:12px;padding:10px 12px;outline:none;}
-.wlog-input:focus{border-color:#0f0f0f;}
-.rate-row{display:flex;gap:5px;}
-.rate-btn{flex:1;padding:8px 4px;background:#f5f4f0;border:1.5px solid #d8d6d0;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:11px;cursor:pointer;color:#999;text-align:center;}
-.rate-btn.on{background:#0f0f0f;border-color:#0f0f0f;color:#f5f4f0;}
-.cond-row{display:flex;gap:5px;}
-.cond-btn{flex:1;padding:7px 2px;background:#f5f4f0;border:1.5px solid #d8d6d0;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:7px;letter-spacing:.5px;cursor:pointer;color:#999;text-align:center;text-transform:uppercase;}
-.cond-btn.on{background:#0f0f0f;border-color:#0f0f0f;color:#f5f4f0;}
-.wlog-save{width:100%;padding:12px;background:#0f0f0f;color:#f5f4f0;border:none;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-top:4px;}
-.wlog-save:active{background:#e63022;}
+/* ── SETTINGS ── */
+.settings-group{border-bottom:1px solid #d4d2cc;}
+.settings-group-label{padding:12px 22px 4px;font-family:var(–font-mono);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#aaa;}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:13px 22px;border-top:1px solid #d4d2cc;cursor:pointer;}
+.settings-row:active{background:#eceae4;}
+.settings-row-name{font-size:14px;color:#0f0f0f;}
+.settings-row-desc{font-family:var(–font-mono);font-size:9px;color:#aaa;margin-top:2px;}
+.settings-row-arrow{font-family:var(–font-mono);font-size:14px;color:#ccc;}
+.settings-row.danger .settings-row-name{color:#e63022;}
+.fb-notice{background:#fff;border:1px solid #d4d2cc;margin:14px 22px;padding:12px 14px;}
+.fb-notice-label{font-family:var(–font-mono);font-size:7px;letter-spacing:2px;text-transform:uppercase;color:#e63022;margin-bottom:4px;}
+.fb-notice-text{font-family:var(–font-mono);font-size:9px;color:#aaa;line-height:1.7;}
 
-/* SETTINGS */
-.set-grp{border-bottom:1px solid #d8d6d0;}
-.set-grp-lbl{padding:13px 22px 5px;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#999;}
-.set-row{display:flex;align-items:center;justify-content:space-between;padding:13px 22px;border-top:1px solid #d8d6d0;cursor:pointer;transition:background .1s;}
-.set-row:active{background:#ece9e4;}
-.set-row-name{font-size:14px;font-weight:400;color:#0f0f0f;}
-.set-row-desc{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;color:#999;margin-top:2px;}
-.set-row-arrow{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:13px;color:#d8d6d0;}
-.set-row.danger .set-row-name{color:#e63022;}
+/* ── WORKOUT TODAY ── */
+.wo-day-header{display:flex;align-items:center;justify-content:space-between;padding:10px 22px;border-bottom:1px solid #d4d2cc;background:#fff;}
+.wo-day-name{font-family:var(–font-display);font-size:22px;letter-spacing:1px;color:#0f0f0f;}
+.wo-day-type{font-family:var(–font-mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#e63022;}
+.wo-rest-view{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 22px;text-align:center;}
+.wo-rest-icon{font-size:40px;margin-bottom:16px;}
+.wo-rest-title{font-family:var(–font-display);font-size:40px;letter-spacing:2px;color:#0f0f0f;margin-bottom:8px;}
+.wo-rest-sub{font-family:var(–font-mono);font-size:10px;color:#aaa;line-height:1.9;}
+.wo-ex-block{padding:14px 22px;border-bottom:1px solid #d4d2cc;}
+.wo-ex-name{font-size:14px;font-weight:500;color:#0f0f0f;margin-bottom:10px;}
+.wo-set-row{display:flex;align-items:center;gap:6px;margin-bottom:7px;}
+.wo-set-label{font-family:var(–font-mono);font-size:8px;color:#aaa;width:44px;flex-shrink:0;}
+.wo-set-input{
+background:#eceae4;border:1px solid #d4d2cc;color:#0f0f0f;
+font-family:var(–font-mono);font-size:12px;padding:7px 8px;
+width:64px;text-align:center;outline:none;
+}
+.wo-set-input:focus{border-color:#0f0f0f;}
+.wo-set-x{font-family:var(–font-mono);font-size:10px;color:#aaa;}
+.wo-set-add{font-family:var(–font-mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;color:#aaa;display:flex;align-items:center;gap:5px;cursor:pointer;margin-top:6px;padding:4px 0;}
+.wo-set-add:active{color:#0f0f0f;}
+.wo-vol-row{display:flex;align-items:flex-start;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid #d4d2cc;}
+.wo-vol-label{font-family:var(–font-mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;color:#aaa;margin-bottom:3px;}
+.wo-vol-num{font-family:var(–font-display);font-size:26px;color:#0f0f0f;line-height:1;}
+.wo-vol-delta{font-family:var(–font-mono);font-size:9px;margin-top:4px;}
+.wo-pr{font-family:var(–font-mono);font-size:8px;color:#e63022;margin-top:3px;}
+.wo-total-bar{padding:12px 22px;border-bottom:1px solid #d4d2cc;display:flex;justify-content:space-between;align-items:baseline;}
+.wo-total-label{font-family:var(–font-mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#aaa;}
+.wo-total-num{font-family:var(–font-display);font-size:30px;color:#0f0f0f;}
+.wo-complete-btn{margin:14px 22px;width:calc(100% - 44px);background:#0f0f0f;color:#f5f4f0;border:none;font-family:var(–font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:15px;cursor:pointer;}
+.wo-complete-btn:active,.wo-complete-btn.done{background:#e63022;}
 
-/* MODALS */
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
-.ov.show{opacity:1;pointer-events:all;}
+/* ── WORKOUT LOG ── */
+.wo-log-section{padding:14px 22px;border-bottom:1px solid #d4d2cc;}
+.wo-log-title{font-family:var(–font-mono);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#aaa;margin-bottom:14px;}
+.log-field{margin-bottom:12px;}
+.log-field-label{font-family:var(–font-mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:6px;}
+.log-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.log-chip{font-family:var(–font-mono);font-size:10px;padding:5px 10px;border:1.5px solid #d4d2cc;cursor:pointer;color:#aaa;background:#f5f4f0;}
+.log-chip.on{background:#0f0f0f;border-color:#0f0f0f;color:#f5f4f0;}
+.log-input{width:100%;background:#fff;border:1px solid #d4d2cc;color:#0f0f0f;font-family:var(–font-mono);font-size:12px;padding:9px 11px;outline:none;}
+.log-input:focus{border-color:#0f0f0f;}
+.log-rate-row{display:flex;gap:5px;}
+.log-rate-btn{flex:1;padding:8px 2px;background:#f5f4f0;border:1.5px solid #d4d2cc;font-family:var(–font-mono);font-size:11px;cursor:pointer;color:#aaa;text-align:center;}
+.log-rate-btn.on{background:#0f0f0f;border-color:#0f0f0f;color:#f5f4f0;}
+.log-cond-row{display:flex;gap:4px;}
+.log-cond-btn{flex:1;padding:7px 1px;background:#f5f4f0;border:1.5px solid #d4d2cc;font-family:var(–font-mono);font-size:7px;letter-spacing:.3px;cursor:pointer;color:#aaa;text-align:center;text-transform:uppercase;}
+.log-cond-btn.on{background:#0f0f0f;border-color:#0f0f0f;color:#f5f4f0;}
+.log-save-btn{width:100%;padding:12px;background:#0f0f0f;color:#f5f4f0;border:none;font-family:var(–font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-top:4px;}
+.log-save-btn:active{background:#e63022;}
+
+/* ── WORKOUT MANAGE ── */
+.wm-day-tabs{display:flex;border-bottom:2px solid #0f0f0f;}
+.wm-day-tab{flex:1;padding:10px 2px;border:none;border-right:1px solid #d4d2cc;background:transparent;color:#aaa;font-family:var(–font-mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-align:center;}
+.wm-day-tab:last-child{border-right:none;}
+.wm-day-tab.on{background:#0f0f0f;color:#f5f4f0;}
+.wm-day-tab.rest-tab{color:#e63022;}
+.wm-day-tab.on.rest-tab{background:#e63022;color:#fff;}
+.wm-day-content{padding:14px 22px;}
+.wm-day-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.wm-day-title{font-family:var(–font-display);font-size:22px;letter-spacing:1px;color:#0f0f0f;}
+.wm-rest-toggle-wrap{display:flex;align-items:center;gap:8px;}
+.wm-rest-label{font-family:var(–font-mono);font-size:9px;color:#aaa;letter-spacing:1px;text-transform:uppercase;}
+.wm-ex-list{border:1px solid #d4d2cc;margin-bottom:12px;}
+.wm-ex-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #d4d2cc;}
+.wm-ex-row:last-child{border-bottom:none;}
+.wm-ex-info .wm-ex-name{font-size:13px;color:#0f0f0f;}
+.wm-ex-info .wm-ex-meta{font-family:var(–font-mono);font-size:9px;color:#aaa;margin-top:2px;}
+.wm-ex-del{background:none;border:1.5px solid #d4d2cc;color:#e63022;font-family:var(–font-mono);font-size:8px;padding:5px 10px;cursor:pointer;letter-spacing:1px;}
+.wm-ex-del:active{background:#e63022;color:#fff;border-color:#e63022;}
+.wm-add-btn{display:flex;align-items:center;gap:8px;padding:10px 0;cursor:pointer;font-family:var(–font-mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#aaa;}
+.wm-add-btn:active{color:#0f0f0f;}
+.wm-empty{font-family:var(–font-mono);font-size:10px;color:#aaa;padding:20px 0;text-align:center;}
+.wm-rest-placeholder{font-family:var(–font-mono);font-size:10px;color:#e63022;padding:20px 0;text-align:center;}
+
+/* ── PR ── */
+.pr-section{padding:14px 22px;border-bottom:1px solid #d4d2cc;}
+.pr-section-label{font-family:var(–font-mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:10px;}
+.pr-row{display:flex;align-items:baseline;justify-content:space-between;padding:8px 0;border-bottom:1px solid #d4d2cc;}
+.pr-row:last-child{border-bottom:none;}
+.pr-name{font-size:13px;color:#0f0f0f;}
+.pr-val{font-family:var(–font-mono);font-size:10px;color:#e63022;}
+.pr-date{font-family:var(–font-mono);font-size:8px;color:#aaa;}
+
+/* ── TOGGLE ── */
+.toggle{width:38px;height:22px;background:#d4d2cc;border-radius:11px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:#0f0f0f;}
+.toggle-knob{position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle.on .toggle-knob{left:19px;}
+
+/* ── MODALS ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.overlay.show{opacity:1;pointer-events:all;}
 .modal{background:#f5f4f0;border-top:2px solid #0f0f0f;padding:22px;width:100%;max-width:430px;transform:translateY(16px);transition:transform .25s;max-height:82vh;overflow-y:auto;}
-.ov.show .modal{transform:translateY(0);}
-.m-title{font-family:‘Bebas Neue’,‘Arial Narrow’,sans-serif;font-size:30px;letter-spacing:1px;margin-bottom:5px;color:#0f0f0f;}
-.m-desc{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:10px;color:#999;margin-bottom:18px;line-height:1.6;}
-.m-textarea{width:100%;height:100px;background:#fff;border:1px solid #d8d6d0;color:#0f0f0f;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:10px;padding:11px;resize:none;outline:none;margin-bottom:11px;}
-.m-input{width:100%;background:#fff;border:1px solid #d8d6d0;color:#0f0f0f;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:12px;padding:11px;outline:none;margin-bottom:9px;}
-.m-input:focus{border-color:#0f0f0f;}
-.m-lbl{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:5px;margin-top:3px;display:block;}
-.m-sel{width:100%;background:#fff;border:1px solid #d8d6d0;color:#0f0f0f;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:12px;padding:11px;outline:none;margin-bottom:9px;-webkit-appearance:none;}
-.btn-row{display:flex;gap:7px;margin-top:4px;}
-.btn{flex:1;padding:12px;border:none;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;}
-.btn-p{background:#0f0f0f;color:#f5f4f0;}
-.btn-p:active{background:#e63022;}
-.btn-s{background:transparent;color:#0f0f0f;border:1.5px solid #d8d6d0;}
-.dl-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #d8d6d0;}
-.dl-name{font-size:13px;color:#0f0f0f;}
-.dl-sub{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;color:#999;}
-.dl-del{background:none;border:1.5px solid #d8d6d0;color:#e63022;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;padding:5px 11px;cursor:pointer;letter-spacing:1px;white-space:nowrap;}
-.dl-del:active{background:#e63022;color:#f5f4f0;border-color:#e63022;}
-.sec-title{font-family:‘Bebas Neue’,‘Arial Narrow’,sans-serif;font-size:20px;letter-spacing:1px;margin:16px 0 8px;color:#0f0f0f;}
+.overlay.show .modal{transform:translateY(0);}
+.modal-title{font-family:var(–font-display);font-size:30px;letter-spacing:1px;margin-bottom:6px;color:#0f0f0f;}
+.modal-desc{font-family:var(–font-mono);font-size:10px;color:#888;margin-bottom:16px;line-height:1.7;}
+.modal-label{font-family:var(–font-mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:5px;margin-top:10px;display:block;}
+.modal-input{width:100%;background:#fff;border:1px solid #d4d2cc;color:#0f0f0f;font-family:var(–font-mono);font-size:13px;padding:10px 11px;outline:none;margin-bottom:2px;}
+.modal-input:focus{border-color:#0f0f0f;}
+.modal-textarea{width:100%;height:100px;background:#fff;border:1px solid #d4d2cc;color:#0f0f0f;font-family:var(–font-mono);font-size:10px;padding:10px;resize:none;outline:none;margin-bottom:10px;}
+.modal-select{width:100%;background:#fff;border:1px solid #d4d2cc;color:#0f0f0f;font-family:var(–font-mono);font-size:13px;padding:10px;outline:none;margin-bottom:2px;-webkit-appearance:none;}
+.modal-btn-row{display:flex;gap:7px;margin-top:14px;}
+.modal-btn{flex:1;padding:13px;border:none;font-family:var(–font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;}
+.modal-btn.primary{background:#0f0f0f;color:#f5f4f0;}
+.modal-btn.primary:active{background:#e63022;}
+.modal-btn.secondary{background:transparent;color:#0f0f0f;border:1.5px solid #d4d2cc;}
+.freq-row{display:flex;gap:6px;margin-bottom:8px;}
+.freq-btn{flex:1;padding:9px 4px;background:#f5f4f0;border:1.5px solid #d4d2cc;font-family:var(–font-mono);font-size:9px;cursor:pointer;color:#888;text-align:center;}
+.freq-btn.on{background:#0f0f0f;border-color:#0f0f0f;color:#f5f4f0;}
+.freq-n-row{display:flex;gap:5px;}
+.freq-n-btn{width:36px;height:32px;border:1.5px solid #d4d2cc;background:#f5f4f0;color:#888;font-family:var(–font-mono);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.freq-n-btn.on{background:#0f0f0f;border-color:#0f0f0f;color:#f5f4f0;}
+.manage-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #d4d2cc;}
+.manage-row:last-child{border-bottom:none;}
+.manage-name{font-size:13px;color:#0f0f0f;}
+.manage-sub{font-family:var(–font-mono);font-size:9px;color:#aaa;margin-top:2px;}
+.manage-del{background:none;border:1.5px solid #d4d2cc;color:#e63022;font-family:var(–font-mono);font-size:8px;padding:5px 10px;cursor:pointer;letter-spacing:1px;white-space:nowrap;}
+.manage-del:active{background:#e63022;color:#fff;border-color:#e63022;}
+.section-title{font-family:var(–font-display);font-size:20px;letter-spacing:1px;margin:16px 0 8px;color:#0f0f0f;}
 
-/* BOTTOM */
-.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#0f0f0f;color:#f5f4f0;padding:13px 22px;display:flex;justify-content:space-between;align-items:center;z-index:100;}
-.bot-msg{font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;}
-.bot-cnt{font-family:‘Bebas Neue’,‘Arial Narrow’,sans-serif;font-size:22px;letter-spacing:1px;color:#e63022;}
+/* ── POPUPS ── */
+#weekly-popup,#monthly-popup{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:none;align-items:flex-end;justify-content:center;}
+#weekly-popup.show,#monthly-popup.show{display:flex;}
+.popup-card{background:#f5f4f0;border-top:2px solid #0f0f0f;padding:26px 24px 36px;width:100%;max-width:430px;}
+.popup-tag{font-family:var(–font-mono);font-size:7px;letter-spacing:3px;color:#aaa;text-transform:uppercase;margin-bottom:4px;}
+.popup-title{font-family:var(–font-display);font-size:44px;line-height:.9;letter-spacing:2px;color:#0f0f0f;margin-bottom:20px;}
+.popup-title span{color:#e63022;}
+.popup-grid{display:flex;border:1px solid #d4d2cc;}
+.popup-cell{flex:1;padding:10px 6px;border-right:1px solid #d4d2cc;text-align:center;}
+.popup-cell:last-child{border-right:none;}
+.popup-cell-val{font-family:var(–font-display);font-size:30px;color:#0f0f0f;line-height:1;}
+.popup-cell-label{font-family:var(–font-mono);font-size:7px;letter-spacing:1px;text-transform:uppercase;color:#aaa;margin-top:3px;}
+.popup-best{margin-top:12px;padding:10px 12px;background:#fff;border:1px solid #d4d2cc;}
+.popup-best-label{font-family:var(–font-mono);font-size:7px;letter-spacing:2px;color:#aaa;text-transform:uppercase;margin-bottom:4px;}
+.popup-best-val{font-size:13px;color:#0f0f0f;}
+.popup-best-val span{color:#e63022;}
+.popup-close-btn{width:100%;background:#0f0f0f;color:#f5f4f0;border:none;font-family:var(–font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:14px;margin-top:14px;cursor:pointer;}
+.popup-close-btn:active{background:#e63022;}
 
-/* TOAST */
-.toast{position:fixed;bottom:66px;left:50%;transform:translateX(-50%);background:#0f0f0f;color:#f5f4f0;font-family:‘IBM Plex Mono’,‘Courier New’,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:9px 18px;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;z-index:600;}
-.toast.show{opacity:1;}
-.toast.err{background:#e63022;}
+/* ── CELEBRATE ── */
+#celebrate{position:fixed;inset:0;background:#0f0f0f;z-index:700;display:none;flex-direction:column;align-items:center;justify-content:center;}
+#celebrate.show{display:flex;}
+.cel-logo{font-family:var(–font-display);font-size:80px;letter-spacing:4px;color:#f0ede8;}
+.cel-msg{font-family:var(–font-mono);font-size:13px;color:#e63022;letter-spacing:2px;text-align:center;margin-top:16px;line-height:2.2;}
+.cel-close{position:absolute;bottom:60px;font-family:var(–font-mono);font-size:9px;letter-spacing:2px;color:#333;text-transform:uppercase;cursor:pointer;border:none;background:none;}
+
+/* ── BOTTOM BAR ── */
+.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#0f0f0f;color:#f5f4f0;padding:12px 22px;display:flex;justify-content:space-between;align-items:center;z-index:100;}
+.bottom-msg{font-family:var(–font-mono);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:#f5f4f0;}
+.bottom-count{font-family:var(–font-display);font-size:22px;letter-spacing:1px;color:#e63022;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:64px;left:50%;transform:translateX(-50%);background:#0f0f0f;color:#f5f4f0;font-family:var(–font-mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:9px 18px;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;z-index:900;}
+#toast.show{opacity:1;}
+#toast.error{background:#e63022;}
+
+/* ── MISC ── */
+.section-divider{height:1px;background:#d4d2cc;margin:0;}
 </style>
 
 </head>
 <body>
 
-<!-- SPLASH -->
+<!-- ═══ SPLASH ═══ -->
 
 <div id="splash">
-  <div class="spc tl"></div><div class="spc tr"></div><div class="spc bl"></div><div class="spc br"></div>
-  <div class="sp-top">Loading your data...</div>
-  <div class="sp-welcome">Welcome to</div>
-  <div class="sp-title">AXIS</div>
+  <div class="sp-corner tl"></div><div class="sp-corner tr"></div>
+  <div class="sp-corner bl"></div><div class="sp-corner br"></div>
+  <div class="sp-sub">Welcome to</div>
+  <div class="sp-logo">AXIS</div>
   <div class="sp-line"></div>
   <div class="sp-slogan"><span>Breathe.</span><span>Align.</span><span>Repeat.</span></div>
-  <div class="sp-bar-wrap">
+  <div class="sp-bar">
     <div class="sp-bar-row"><span>Initializing</span><span id="spPct">0%</span></div>
     <div class="sp-track"><div class="sp-fill" id="spFill"></div></div>
   </div>
 </div>
 
-<!-- LOCK -->
+<!-- ═══ LOGIN ═══ -->
 
-<div id="lock">
-  <div class="lk-title">DAILY<br><span>ROUTINE</span></div>
-  <div class="lk-sub">Enter passcode</div>
-  <div class="lk-dots"><div class="lk-dot" id="d0"></div><div class="lk-dot" id="d1"></div><div class="lk-dot" id="d2"></div><div class="lk-dot" id="d3"></div></div>
-  <div class="lk-err" id="lkErr"></div>
-  <div class="keypad">
-    <button class="k" onclick="kp('1')">1</button><button class="k" onclick="kp('2')">2</button><button class="k" onclick="kp('3')">3</button>
-    <button class="k" onclick="kp('4')">4</button><button class="k" onclick="kp('5')">5</button><button class="k" onclick="kp('6')">6</button>
-    <button class="k" onclick="kp('7')">7</button><button class="k" onclick="kp('8')">8</button><button class="k" onclick="kp('9')">9</button>
-    <button class="k emp"></button><button class="k" onclick="kp('0')">0</button><button class="k del" onclick="kd()">DEL</button>
+<div id="login">
+  <div class="ls-corner tl"></div><div class="ls-corner tr"></div>
+  <div class="ls-corner bl"></div><div class="ls-corner br"></div>
+  <div class="ls-logo">AXIS</div>
+  <div class="ls-line"></div>
+  <div class="ls-desc">당신의 루틴을 어디서든.<br>로그인하면 모든 기기에서<br>동일한 데이터가 유지됩니다.</div>
+  <button class="ls-google" onclick="signInGoogle()">
+    <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+    Google로 로그인
+  </button>
+  <button class="ls-offline" onclick="offlineMode()">로그인 없이 시작 (기기 저장)</button>
+  <div class="ls-userbar" id="lsUserBar">
+    <div class="ls-username" id="lsUserName"></div>
+    <button class="ls-logout" onclick="doSignOut()">로그아웃</button>
   </div>
 </div>
 
-<!-- APP -->
+<!-- ═══ ONBOARDING ═══ -->
+
+<div id="ob">
+  <div class="ob-progress"><div class="ob-progress-fill" id="obFill" style="width:33%"></div></div>
+  <div class="ob-body" id="obBody"></div>
+  <div class="ob-foot">
+    <div class="ob-skip" onclick="obSkip()">Skip</div>
+    <button class="ob-next" id="obNextBtn" onclick="obNext()">Next →</button>
+  </div>
+</div>
+
+<!-- ═══ WELCOME ═══ -->
+
+<div id="ob-welcome">
+  <div class="ow-corner tl"></div><div class="ow-corner tr"></div>
+  <div class="ow-corner bl"></div><div class="ow-corner br"></div>
+  <div class="ow-pre">Welcome to</div>
+  <div class="ow-logo">AXIS</div>
+  <div class="ow-line"></div>
+  <div class="ow-name" id="owName">.</div>
+  <div class="ow-slogan">Breathe.<br>Align.<br>Repeat.</div>
+  <button class="ow-btn" onclick="finishOnboard()">시작하기</button>
+</div>
+
+<!-- ═══ PWA ═══ -->
+
+<div id="pwa">
+  <div class="pwa-card">
+    <div class="pwa-title">앱으로 추가하기</div>
+    <div class="pwa-desc">홈 화면에 추가하면 앱처럼 사용할 수 있어요.</div>
+    <div class="pwa-steps">
+      <div class="pwa-step"><div class="pwa-num">1</div><div class="pwa-step-text">하단 공유 버튼 (□↑) 탭</div></div>
+      <div class="pwa-step"><div class="pwa-num">2</div><div class="pwa-step-text">"홈 화면에 추가" 선택</div></div>
+      <div class="pwa-step"><div class="pwa-num">3</div><div class="pwa-step-text">"추가" 탭 → 완료</div></div>
+    </div>
+    <button class="pwa-close" onclick="closePwa()">알겠어요</button>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
 
 <div id="app">
 
   <!-- DAILY PAGE -->
 
-  <div id="pg-daily">
-    <div class="hdr-block">
+  <div id="pgDaily">
+    <div class="hdr">
       <div class="hdr-main">
-        <div class="hdr-eye1">Find Your Balance with "AXIS"</div>
-        <div class="hdr-eye2" id="hDate"></div>
+        <div class="hdr-eye1" id="dEye1">Find Your Balance with "AXIS"</div>
+        <div class="hdr-eye2" id="dEye2"></div>
         <div class="hdr-title">DAILY<br><span>ROUTINE</span></div>
         <div class="hdr-quote">Rejection is redirection.<br>A promise to yourself.</div>
       </div>
-      <div class="hdr-sb">
-        <div class="sb-tab on" onclick="gotoPage('daily')">Daily</div>
-        <div class="sb-div"></div>
-        <div class="sb-tab" onclick="gotoPage('workout')">Workout</div>
+      <div class="hdr-sidebar">
+        <div class="sb-tab on" onclick="goPage('daily')">Daily</div>
+        <div class="sb-divider"></div>
+        <div class="sb-tab" onclick="goPage('workout')">Workout</div>
       </div>
     </div>
     <div class="date-nav">
-      <button class="dn-btn" id="dPrev" onclick="chDay(-1)">&#8249;</button>
-      <div class="dn-lbl today" id="dLbl">Today</div>
-      <button class="dn-btn" id="dNext" onclick="chDay(1)" disabled>&#8250;</button>
+      <button class="dn-btn" id="dPrev" onclick="changeDay(-1)">&#8249;</button>
+      <div class="dn-label today" id="dLabel">Today</div>
+      <button class="dn-btn" id="dNext" onclick="changeDay(1)" disabled>&#8250;</button>
     </div>
     <div class="prog-wrap">
-      <div class="prog-top"><div class="prog-pct" id="dPct">0%</div><div class="prog-msg" id="dMsg">Start your day.</div></div>
+      <div class="prog-top">
+        <div class="prog-pct" id="dPct">0%</div>
+        <div class="prog-msg" id="dMsg">Start your day.</div>
+      </div>
       <div class="prog-track"><div class="prog-fill" id="dFill"></div></div>
-      <div class="prog-bot"><span class="prog-lbl">Progress</span><span class="prog-lbl" id="dCnt">0 / 0</span></div>
+      <div class="prog-bottom">
+        <span class="prog-label">Progress</span>
+        <span class="prog-label" id="dCount">0 / 0</span>
+      </div>
     </div>
     <div class="tab-nav">
-      <button class="tb on" onclick="dTab('today',this)">Today</button>
-      <button class="tb" onclick="dTab('stats',this)">Stats</button>
-      <button class="tb" onclick="dTab('settings',this)">Settings</button>
+      <button class="tab-btn on" onclick="dTab('today',this)">Today</button>
+      <button class="tab-btn" onclick="dTab('stats',this)">Stats</button>
+      <button class="tab-btn" onclick="dTab('settings',this)">Settings</button>
     </div>
-    <div class="view on" id="vd-today">
-      <div id="rList"></div>
-      <div class="add-row" onclick="openAddR()"><div class="add-icon">+</div><div class="add-txt">Add item</div></div>
+    <!-- TODAY -->
+    <div class="view on" id="vdToday">
+      <div id="routineList"></div>
+      <div class="add-row" onclick="openAddRoutine()">
+        <div class="add-icon">+</div>
+        <div class="add-text">Add item</div>
+      </div>
+      <div class="memo-section">
+        <div class="memo-label">Daily Memo</div>
+        <textarea class="memo-input" id="dailyMemo" rows="2" placeholder="오늘 한 줄..." oninput="saveMemo()"></textarea>
+      </div>
     </div>
-    <div class="view" id="vd-stats">
-      <div class="mo-nav"><button class="mo-btn" onclick="chMo(-1)">&#8249;</button><div class="mo-lbl" id="dMoLbl"></div><button class="mo-btn" onclick="chMo(1)">&#8250;</button></div>
+    <!-- STATS -->
+    <div class="view" id="vdStats">
+      <div class="streak-section">
+        <div class="streak-row">
+          <div class="streak-num" id="streakNum">0</div>
+          <div class="streak-unit">일 연속</div>
+        </div>
+        <div class="streak-msg" id="streakMsg">오늘부터 시작하세요.</div>
+        <div class="streak-best" id="streakBest">Best: 0일</div>
+      </div>
+      <div class="mo-nav">
+        <button class="mo-btn" onclick="changeMo(-1)">&#8249;</button>
+        <div class="mo-label" id="dMoLabel"></div>
+        <button class="mo-btn" onclick="changeMo(1)">&#8250;</button>
+      </div>
       <div class="cal-wrap">
-        <div class="cal-days"><div class="cal-dlbl">SUN</div><div class="cal-dlbl">MON</div><div class="cal-dlbl">TUE</div><div class="cal-dlbl">WED</div><div class="cal-dlbl">THU</div><div class="cal-dlbl">FRI</div><div class="cal-dlbl">SAT</div></div>
+        <div class="cal-days-row">
+          <div class="cal-day">SUN</div><div class="cal-day">MON</div><div class="cal-day">TUE</div>
+          <div class="cal-day">WED</div><div class="cal-day">THU</div><div class="cal-day">FRI</div><div class="cal-day">SAT</div>
+        </div>
         <div class="cal-grid" id="dCal"></div>
       </div>
-      <div id="dStats"></div>
-      <div class="bar-sec"><div class="bar-sec-lbl">Per Item Rate</div><div id="dBars"></div></div>
+      <div class="weekly-section">
+        <div class="weekly-label">This Week</div>
+        <div class="weekly-grid" id="weeklyGrid"></div>
+        <div class="weekly-best" id="weeklyBest"></div>
+      </div>
+      <div id="dStatRows"></div>
+      <div class="bar-section">
+        <div class="bar-section-label">Per Item Rate</div>
+        <div id="dBars"></div>
+      </div>
     </div>
-    <div class="view" id="vd-settings">
-      <div class="set-grp"><div class="set-grp-lbl">Backup</div>
-        <div class="set-row" onclick="doExport()"><div><div class="set-row-name">데이터 내보내기</div><div class="set-row-desc">전체 데이터 복사 보관</div></div><div class="set-row-arrow">→</div></div>
-        <div class="set-row" onclick="openImport()"><div><div class="set-row-name">데이터 가져오기</div><div class="set-row-desc">복사해둔 코드 붙여넣기</div></div><div class="set-row-arrow">→</div></div>
+    <!-- SETTINGS -->
+    <div class="view" id="vdSettings">
+      <div class="settings-group">
+        <div class="settings-group-label">Account</div>
+        <div class="settings-row" onclick="showLogin()">
+          <div><div class="settings-row-name" id="acctName">구글 로그인</div><div class="settings-row-desc">클라우드 동기화</div></div>
+          <div class="settings-row-arrow">→</div>
+        </div>
       </div>
-      <div class="set-grp"><div class="set-grp-lbl">Manage</div>
-        <div class="set-row" onclick="openManR()"><div><div class="set-row-name">루틴 관리</div><div class="set-row-desc">항목 삭제 및 카테고리 수정</div></div><div class="set-row-arrow">→</div></div>
+      <div class="settings-group">
+        <div class="settings-group-label">Profile</div>
+        <div class="settings-row" onclick="openEditName()">
+          <div><div class="settings-row-name">이름 수정</div><div class="settings-row-desc" id="nameDesc"></div></div>
+          <div class="settings-row-arrow">→</div>
+        </div>
       </div>
-      <div class="set-grp"><div class="set-grp-lbl">Danger</div>
-        <div class="set-row danger" onclick="resetD()"><div><div class="set-row-name">전체 초기화</div><div class="set-row-desc">모든 기록 삭제</div></div><div class="set-row-arrow">→</div></div>
+      <div class="settings-group">
+        <div class="settings-group-label">Backup</div>
+        <div class="settings-row" onclick="doExport()"><div><div class="settings-row-name">데이터 내보내기</div></div><div class="settings-row-arrow">→</div></div>
+        <div class="settings-row" onclick="openOv('ov-import')"><div><div class="settings-row-name">데이터 가져오기</div></div><div class="settings-row-arrow">→</div></div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-label">Manage</div>
+        <div class="settings-row" onclick="openManageRoutine()"><div><div class="settings-row-name">루틴 관리</div><div class="settings-row-desc">항목 삭제 및 카테고리 수정</div></div><div class="settings-row-arrow">→</div></div>
+        <div class="settings-row" onclick="showPwa()"><div><div class="settings-row-name">홈 화면에 추가</div></div><div class="settings-row-arrow">→</div></div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-label">Danger</div>
+        <div class="settings-row danger" onclick="resetAll()"><div><div class="settings-row-name">전체 초기화</div></div><div class="settings-row-arrow">→</div></div>
+      </div>
+      <div class="fb-notice">
+        <div class="fb-notice-label">Firebase 미연결</div>
+        <div class="fb-notice-text">Firebase config를 입력하면 구글 로그인 및 클라우드 동기화가 활성화됩니다.</div>
       </div>
     </div>
   </div>
 
   <!-- WORKOUT PAGE -->
 
-  <div id="pg-workout" style="display:none;">
-    <div class="hdr-block">
+  <div id="pgWorkout" style="display:none">
+    <div class="hdr">
       <div class="hdr-main">
-        <div class="hdr-eye1">Find Your Balance with "AXIS"</div>
-        <div class="hdr-eye2" id="hDateW"></div>
+        <div class="hdr-eye1" id="wEye1">Find Your Balance with "AXIS"</div>
+        <div class="hdr-eye2" id="wEye2"></div>
         <div class="hdr-title">WORK<br><span>OUT</span></div>
         <div class="hdr-quote">Train hard. Track everything.<br>Show up every day.</div>
       </div>
-      <div class="hdr-sb">
-        <div class="sb-tab" onclick="gotoPage('daily')">Daily</div>
-        <div class="sb-div"></div>
-        <div class="sb-tab on" onclick="gotoPage('workout')">Workout</div>
+      <div class="hdr-sidebar">
+        <div class="sb-tab" onclick="goPage('daily')">Daily</div>
+        <div class="sb-divider"></div>
+        <div class="sb-tab on" onclick="goPage('workout')">Workout</div>
       </div>
+    </div>
+    <div class="date-nav">
+      <button class="dn-btn" id="wPrev" onclick="changeDay(-1)">&#8249;</button>
+      <div class="dn-label today" id="wLabel">Today</div>
+      <button class="dn-btn" id="wNext" onclick="changeDay(1)" disabled>&#8250;</button>
     </div>
     <div class="prog-wrap">
-      <div class="prog-top"><div class="prog-pct" id="wPct">0%</div><div class="prog-msg" id="wMsg">Start training.</div></div>
+      <div class="prog-top">
+        <div class="prog-pct" id="wPct">—</div>
+        <div class="prog-msg" id="wMsg">Start training.</div>
+      </div>
       <div class="prog-track"><div class="prog-fill" id="wFill"></div></div>
-      <div class="prog-bot"><span class="prog-lbl">Progress</span><span class="prog-lbl" id="wCnt">0 / 0</span></div>
+      <div class="prog-bottom">
+        <span class="prog-label">Progress</span>
+        <span class="prog-label" id="wCount">—</span>
+      </div>
     </div>
     <div class="tab-nav">
-      <button class="tb on" onclick="wTab('today',this)">Today</button>
-      <button class="tb" onclick="wTab('cal',this)">Calendar</button>
-      <button class="tb" onclick="wTab('settings',this)">Settings</button>
+      <button class="tab-btn on" onclick="wTab('today',this)">Today</button>
+      <button class="tab-btn" onclick="wTab('cal',this)">Calendar</button>
+      <button class="tab-btn" onclick="wTab('manage',this)">Manage</button>
     </div>
-    <div class="view on" id="vw-today">
-      <div id="wList"></div>
-      <div class="add-row" onclick="openAddW()"><div class="add-icon">+</div><div class="add-txt">Add exercise</div></div>
-    </div>
-    <div class="view" id="vw-cal">
-      <div class="mo-nav"><button class="mo-btn" onclick="chWMo(-1)">&#8249;</button><div class="mo-lbl" id="wMoLbl"></div><button class="mo-btn" onclick="chWMo(1)">&#8250;</button></div>
+    <div class="view on" id="vwToday"><div id="workoutList"></div></div>
+    <div class="view" id="vwCal">
+      <div class="mo-nav"><button class="mo-btn" onclick="changeWMo(-1)">&#8249;</button><div class="mo-label" id="wMoLabel"></div><button class="mo-btn" onclick="changeWMo(1)">&#8250;</button></div>
       <div class="cal-wrap">
-        <div class="cal-days"><div class="cal-dlbl">SUN</div><div class="cal-dlbl">MON</div><div class="cal-dlbl">TUE</div><div class="cal-dlbl">WED</div><div class="cal-dlbl">THU</div><div class="cal-dlbl">FRI</div><div class="cal-dlbl">SAT</div></div>
+        <div class="cal-days-row"><div class="cal-day">SUN</div><div class="cal-day">MON</div><div class="cal-day">TUE</div><div class="cal-day">WED</div><div class="cal-day">THU</div><div class="cal-day">FRI</div><div class="cal-day">SAT</div></div>
         <div class="cal-grid" id="wCal"></div>
       </div>
-      <div class="wlog">
-        <div class="wlog-title" id="wlogTitle">Today's Log</div>
-        <div class="wf"><div class="wf-lbl">Target 부위</div>
-          <div class="chips" id="chips">
-            <div class="chip" data-v="가슴" onclick="togChip(this)">가슴</div>
-            <div class="chip" data-v="어깨" onclick="togChip(this)">어깨</div>
-            <div class="chip" data-v="등" onclick="togChip(this)">등</div>
-            <div class="chip" data-v="이두" onclick="togChip(this)">이두</div>
-            <div class="chip" data-v="삼두" onclick="togChip(this)">삼두</div>
-            <div class="chip" data-v="복부" onclick="togChip(this)">복부</div>
-            <div class="chip" data-v="하체" onclick="togChip(this)">하체</div>
+      <div class="wo-log-section">
+        <div class="wo-log-title" id="logTitle">Today's Log</div>
+        <div class="log-field"><div class="log-field-label">Target 부위</div>
+          <div class="log-chips" id="logChips">
+            <div class="log-chip" data-v="가슴" onclick="togChip(this)">가슴</div>
+            <div class="log-chip" data-v="어깨" onclick="togChip(this)">어깨</div>
+            <div class="log-chip" data-v="등" onclick="togChip(this)">등</div>
+            <div class="log-chip" data-v="이두" onclick="togChip(this)">이두</div>
+            <div class="log-chip" data-v="삼두" onclick="togChip(this)">삼두</div>
+            <div class="log-chip" data-v="복부" onclick="togChip(this)">복부</div>
+            <div class="log-chip" data-v="하체" onclick="togChip(this)">하체</div>
           </div>
         </div>
-        <div class="wf"><div class="wf-lbl">총 운동 시간</div><input class="wlog-input" id="wlogTime" type="number" placeholder="분 (e.g. 60)"></div>
-        <div class="wf"><div class="wf-lbl">만족도</div>
-          <div class="rate-row">
-            <button class="rate-btn" data-v="1" onclick="selRate(this)">1</button><button class="rate-btn" data-v="2" onclick="selRate(this)">2</button><button class="rate-btn" data-v="3" onclick="selRate(this)">3</button><button class="rate-btn" data-v="4" onclick="selRate(this)">4</button><button class="rate-btn" data-v="5" onclick="selRate(this)">5</button>
+        <div class="log-field"><div class="log-field-label">총 운동 시간</div><input class="log-input" id="logTime" type="number" placeholder="분 (e.g. 60)"></div>
+        <div class="log-field"><div class="log-field-label">만족도</div>
+          <div class="log-rate-row">
+            <button class="log-rate-btn" data-v="1" onclick="selRate(this)">1</button>
+            <button class="log-rate-btn" data-v="2" onclick="selRate(this)">2</button>
+            <button class="log-rate-btn" data-v="3" onclick="selRate(this)">3</button>
+            <button class="log-rate-btn" data-v="4" onclick="selRate(this)">4</button>
+            <button class="log-rate-btn" data-v="5" onclick="selRate(this)">5</button>
           </div>
         </div>
-        <div class="wf"><div class="wf-lbl">컨디션</div>
-          <div class="cond-row">
-            <button class="cond-btn" data-v="매우좋음" onclick="selCond(this)">매우좋음</button><button class="cond-btn" data-v="좋음" onclick="selCond(this)">좋음</button><button class="cond-btn" data-v="보통" onclick="selCond(this)">보통</button><button class="cond-btn" data-v="나쁨" onclick="selCond(this)">나쁨</button>
+        <div class="log-field"><div class="log-field-label">컨디션</div>
+          <div class="log-cond-row">
+            <button class="log-cond-btn" data-v="매우좋음" onclick="selCond(this)">매우좋음</button>
+            <button class="log-cond-btn" data-v="좋음" onclick="selCond(this)">좋음</button>
+            <button class="log-cond-btn" data-v="보통" onclick="selCond(this)">보통</button>
+            <button class="log-cond-btn" data-v="나쁨" onclick="selCond(this)">나쁨</button>
           </div>
         </div>
-        <div class="wf"><div class="wf-lbl">메모</div><input class="wlog-input" id="wlogMemo" placeholder="한 줄 메모..."></div>
-        <button class="wlog-save" onclick="saveLog()">Save Log</button>
+        <div class="log-field"><div class="log-field-label">메모</div><input class="log-input" id="logMemo" placeholder="한 줄 메모..."></div>
+        <button class="log-save-btn" onclick="saveLog()">Save Log</button>
       </div>
-      <div id="wStats"></div>
+      <div class="pr-section"><div class="pr-section-label">PR 기록</div><div id="prList"></div></div>
     </div>
-    <div class="view" id="vw-settings">
-      <div class="set-grp"><div class="set-grp-lbl">Backup</div>
-        <div class="set-row" onclick="doExport()"><div><div class="set-row-name">데이터 내보내기</div><div class="set-row-desc">전체 데이터 복사 보관</div></div><div class="set-row-arrow">→</div></div>
-        <div class="set-row" onclick="openImport()"><div><div class="set-row-name">데이터 가져오기</div><div class="set-row-desc">복사해둔 코드 붙여넣기</div></div><div class="set-row-arrow">→</div></div>
-      </div>
-      <div class="set-grp"><div class="set-grp-lbl">Manage</div>
-        <div class="set-row" onclick="openManW()"><div><div class="set-row-name">운동 관리</div><div class="set-row-desc">항목 삭제 및 카테고리 수정</div></div><div class="set-row-arrow">→</div></div>
-      </div>
-      <div class="set-grp"><div class="set-grp-lbl">Danger</div>
-        <div class="set-row danger" onclick="resetW()"><div><div class="set-row-name">운동 기록 초기화</div><div class="set-row-desc">모든 운동 기록 삭제</div></div><div class="set-row-arrow">→</div></div>
-      </div>
+    <!-- MANAGE TAB (요일 탭 형식) -->
+    <div class="view" id="vwManage">
+      <div class="wm-day-tabs" id="wmDayTabs"></div>
+      <div class="wm-day-content" id="wmDayContent"></div>
     </div>
   </div>
 
+</div><!-- /app -->
+
+<!-- ═══ POPUPS ═══ -->
+
+<div id="weekly-popup">
+  <div class="popup-card">
+    <div class="popup-tag" id="wpTag">Weekly Review</div>
+    <div class="popup-title">이번 주<br><span>리뷰</span></div>
+    <div class="popup-grid" id="wpGrid"></div>
+    <div class="popup-best" id="wpBest"></div>
+    <button class="popup-close-btn" onclick="document.getElementById('weekly-popup').classList.remove('show')">다음 주도 가자 →</button>
+  </div>
+</div>
+<div id="monthly-popup">
+  <div class="popup-card">
+    <div class="popup-tag" id="mpTag">Monthly Review</div>
+    <div class="popup-title">지난달<br><span>리뷰</span></div>
+    <div class="popup-grid" id="mpGrid"></div>
+    <div class="popup-best" id="mpBest"></div>
+    <button class="popup-close-btn" onclick="document.getElementById('monthly-popup').classList.remove('show')">이번 달도 가자 →</button>
+  </div>
+</div>
+<div id="celebrate">
+  <div class="cel-logo">AXIS</div>
+  <div class="cel-msg">오늘의 약속을<br>지켰습니다.</div>
+  <button class="cel-close" onclick="document.getElementById('celebrate').classList.remove('show')">계속하기</button>
 </div>
 
-<!-- MODALS -->
+<!-- ═══ MODALS ═══ -->
 
-<div class="ov" id="ov-export"><div class="modal"><div class="m-title">Export</div><div class="m-desc">아래 코드를 전체 복사해서 저장하세요.</div><textarea class="m-textarea" id="expTxt" readonly></textarea><div class="btn-row"><button class="btn btn-s" onclick="closeOv('ov-export')">Close</button><button class="btn btn-p" onclick="copyExp()">Copy</button></div></div></div>
-<div class="ov" id="ov-import"><div class="modal"><div class="m-title">Import</div><div class="m-desc">복사해둔 코드를 아래에 붙여넣으세요.</div><textarea class="m-textarea" id="impTxt" placeholder="Paste here..."></textarea><div class="btn-row"><button class="btn btn-s" onclick="closeOv('ov-import')">Cancel</button><button class="btn btn-p" onclick="doImport()">Import</button></div></div></div>
-<div class="ov" id="ov-addR"><div class="modal"><div class="m-title">Add Item</div><label class="m-lbl">카테고리</label><select class="m-sel" id="rCatSel"></select><input class="m-input" id="rName" placeholder="Item name (e.g. 런닝)"><input class="m-input" id="rSub" placeholder="Sub label (e.g. 5 KM) — optional"><div class="btn-row"><button class="btn btn-s" onclick="closeOv('ov-addR')">Cancel</button><button class="btn btn-p" onclick="doAddR()">Add</button></div></div></div>
-<div class="ov" id="ov-addW"><div class="modal"><div class="m-title">Add Exercise</div><label class="m-lbl">카테고리</label><select class="m-sel" id="wCatSel"></select><input class="m-input" id="wName" placeholder="운동 이름 (e.g. 벤치프레스)"><input class="m-input" id="wWeight" placeholder="무게 (e.g. 80kg)"><input class="m-input" id="wReps" placeholder="횟수 (e.g. 10)" type="number" min="1"><input class="m-input" id="wSets" placeholder="세트수 (e.g. 5)" type="number" min="1"><div class="btn-row"><button class="btn btn-s" onclick="closeOv('ov-addW')">Cancel</button><button class="btn btn-p" onclick="doAddW()">Add</button></div></div></div>
-<div class="ov" id="ov-manR"><div class="modal"><div class="m-title">루틴 관리</div><div id="manRList"></div><div class="sec-title">카테고리 관리</div><div id="manRCat"></div><div style="display:flex;gap:7px;margin-top:9px;"><input class="m-input" id="newRCat" placeholder="새 카테고리" style="margin-bottom:0;flex:1;"><button class="btn btn-p" style="flex:0 0 auto;padding:11px 14px;" onclick="addRCat()">+</button></div><div class="btn-row" style="margin-top:14px;"><button class="btn btn-s" onclick="closeOv('ov-manR')">Close</button></div></div></div>
-<div class="ov" id="ov-manW"><div class="modal"><div class="m-title">운동 관리</div><div id="manWList"></div><div class="sec-title">카테고리 관리</div><div id="manWCat"></div><div style="display:flex;gap:7px;margin-top:9px;"><input class="m-input" id="newWCat" placeholder="새 카테고리" style="margin-bottom:0;flex:1;"><button class="btn btn-p" style="flex:0 0 auto;padding:11px 14px;" onclick="addWCat()">+</button></div><div class="btn-row" style="margin-top:14px;"><button class="btn btn-s" onclick="closeOv('ov-manW')">Close</button></div></div></div>
+<div class="overlay" id="ov-export"><div class="modal">
+  <div class="modal-title">Export</div>
+  <div class="modal-desc">아래 코드를 전체 복사해서 저장하세요.</div>
+  <textarea class="modal-textarea" id="exportText" readonly style="height:120px;"></textarea>
+  <div class="modal-btn-row"><button class="modal-btn secondary" onclick="closeOv('ov-export')">Close</button><button class="modal-btn primary" onclick="copyExport()">Copy</button></div>
+</div></div>
 
-<div class="bottom"><div class="bot-msg" id="botMsg">Start your day</div><div class="bot-cnt" id="botCnt">0/0</div></div>
-<div class="toast" id="toast"></div>
+<div class="overlay" id="ov-import"><div class="modal">
+  <div class="modal-title">Import</div>
+  <div class="modal-desc">복사해둔 코드를 붙여넣으세요.</div>
+  <textarea class="modal-textarea" id="importText" placeholder="Paste here..."></textarea>
+  <div class="modal-btn-row"><button class="modal-btn secondary" onclick="closeOv('ov-import')">Cancel</button><button class="modal-btn primary" onclick="doImport()">Import</button></div>
+</div></div>
+
+<div class="overlay" id="ov-addRoutine"><div class="modal">
+  <div class="modal-title">Add Item</div>
+  <span class="modal-label">카테고리</span><select class="modal-select" id="rCatSel"></select>
+  <span class="modal-label">이름</span><input class="modal-input" id="rNameInput" placeholder="Item name (e.g. 런닝)">
+  <span class="modal-label">서브 레이블 (선택)</span><input class="modal-input" id="rSubInput" placeholder="e.g. 5 KM">
+  <span class="modal-label">목표 빈도</span>
+  <div class="freq-row" id="freqBtns">
+    <button class="freq-btn on" onclick="selFreq(this,'daily')">매일</button>
+    <button class="freq-btn" onclick="selFreq(this,'weekly')">주 N회</button>
+  </div>
+  <div id="freqNWrap" style="display:none;margin-bottom:8px;">
+    <span class="modal-label">주 몇 회?</span>
+    <div class="freq-n-row" id="freqNBtns"></div>
+  </div>
+  <div class="modal-btn-row"><button class="modal-btn secondary" onclick="closeOv('ov-addRoutine')">Cancel</button><button class="modal-btn primary" onclick="doAddRoutine()">Add</button></div>
+</div></div>
+
+<div class="overlay" id="ov-manageRoutine"><div class="modal">
+  <div class="modal-title">루틴 관리</div>
+  <div id="manageRoutineList"></div>
+  <div class="section-title">카테고리 관리</div>
+  <div id="manageCatList"></div>
+  <div style="display:flex;gap:7px;margin-top:10px;">
+    <input class="modal-input" id="newCatInput" placeholder="새 카테고리" style="margin-bottom:0;flex:1;">
+    <button class="modal-btn primary" style="flex:0 0 auto;padding:10px 14px;" onclick="addCategory()">+</button>
+  </div>
+  <div class="modal-btn-row"><button class="modal-btn secondary" onclick="closeOv('ov-manageRoutine')">Close</button></div>
+</div></div>
+
+<div class="overlay" id="ov-editName"><div class="modal">
+  <div class="modal-title">이름 수정</div>
+  <span class="modal-label">이름</span><input class="modal-input" id="editNameInput" placeholder="이름 입력">
+  <div class="modal-btn-row"><button class="modal-btn secondary" onclick="closeOv('ov-editName')">Cancel</button><button class="modal-btn primary" onclick="saveEditName()">Save</button></div>
+</div></div>
+
+<!-- OB 추가 모달 -->
+
+<div class="overlay" id="ov-obCat"><div class="modal">
+  <div class="modal-title">카테고리 추가</div>
+  <input class="modal-input" id="obCatInput" placeholder="카테고리 이름">
+  <div class="modal-btn-row"><button class="modal-btn secondary" onclick="closeOv('ov-obCat')">Cancel</button><button class="modal-btn primary" onclick="doAddObCat()">Add</button></div>
+</div></div>
+
+<!-- 운동 추가 모달 (Manage 탭에서 사용) -->
+
+<div class="overlay" id="ov-addEx"><div class="modal">
+  <div class="modal-title">운동 추가</div>
+  <span class="modal-label" id="addExDayLabel">요일</span>
+  <span class="modal-label">운동 이름</span><input class="modal-input" id="addExName" placeholder="e.g. 벤치프레스">
+  <div style="display:flex;gap:8px;">
+    <div style="flex:1;"><span class="modal-label">세트 수</span><input class="modal-input" id="addExSets" type="number" min="1" max="20" placeholder="e.g. 5"></div>
+    <div style="flex:1;"><span class="modal-label">기본 횟수</span><input class="modal-input" id="addExReps" type="number" min="1" max="100" placeholder="e.g. 10"></div>
+  </div>
+  <div class="modal-btn-row"><button class="modal-btn secondary" onclick="closeOv('ov-addEx')">Cancel</button><button class="modal-btn primary" onclick="doAddExercise()">Add</button></div>
+</div></div>
+
+<div class="bottom-bar">
+  <div class="bottom-msg" id="bottomMsg">Start your day</div>
+  <div class="bottom-count" id="bottomCount">0/0</div>
+</div>
+<div id="toast"></div>
+
+<!-- ═══ FIREBASE (주석 해제 후 config 입력) ═══
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as fbOut }
+  from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc }
+  from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+window._fbLogin = () => signInWithPopup(auth, provider).then(r => {
+  window._fbUser = r.user;
+  document.getElementById('lsUserName').textContent = r.user.displayName;
+  document.getElementById('lsUserBar').classList.add('show');
+  loadCloud(r.user.uid).then(() => {
+    document.getElementById('login').classList.remove('show');
+    checkOnboard();
+  });
+}).catch(e => showToast(e.message, true));
+
+window._fbOut = () => fbOut(auth).then(() => { window._fbUser = null; showToast('로그아웃됨.'); });
+
+window._fbSave = async (data) => {
+  if (!window._fbUser) return;
+  await setDoc(doc(db, 'users', window._fbUser.uid), data, { merge: true });
+};
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    window._fbUser = user;
+    document.getElementById('lsUserName').textContent = user.displayName;
+    document.getElementById('lsUserBar').classList.add('show');
+    document.getElementById('acctName').textContent = user.displayName || '로그인됨';
+  }
+});
+
+async function loadCloud(uid) {
+  const snap = await getDoc(doc(db, 'users', uid));
+  if (!snap.exists()) return;
+  const d = snap.data();
+  if (d.DD) { DD = d.DD; sl('ax_dd', DD); }
+  if (d.WL) { WL = d.WL; sl('ax_wl', WL); }
+  if (d.RR) { RR = d.RR; sl('ax_rr', RR); }
+  if (d.RC) { RC = d.RC; sl('ax_rc', RC); }
+  if (d.WW) { WW = d.WW; sl('ax_ww', WW); }
+  if (d.SD) { SD = d.SD; sl('ax_sd', SD); }
+  if (d.WO) { WO = d.WO; sl('ax_wo', WO); }
+  if (d.PR) { PR = d.PR; sl('ax_pr', PR); }
+  if (d.userName) { userName = d.userName; sl('ax_name', userName); }
+  if (d.userAge) { userAge = d.userAge; sl('ax_age', userAge); }
+  renderRoutine(); renderWorkout(); updateBottom(); updateHeaders();
+  showToast('클라우드 동기화 완료');
+}
+</script>
+-->
 
 <script>
-const PC='4320';let pin='';
-function kp(n){if(pin.length>=4)return;pin+=n;ud();if(pin.length===4){setTimeout(()=>{if(pin===PC){document.getElementById('lock').classList.add('gone');sessionStorage.setItem('ok','1');init();}else{document.querySelectorAll('.lk-dot').forEach(d=>d.classList.add('err'));document.getElementById('lkErr').textContent='Incorrect passcode';setTimeout(()=>{pin='';ud();document.querySelectorAll('.lk-dot').forEach(d=>d.classList.remove('on','err'));document.getElementById('lkErr').textContent='';},800);}},120);}}
-function kd(){pin=pin.slice(0,-1);ud();}
-function ud(){for(let i=0;i<4;i++)document.getElementById('d'+i).classList.toggle('on',i<pin.length);}
+/* ═══ UTILS ═══ */
+const gl = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
+const sl = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const p2 = n => String(n).padStart(2, '0');
+const fmt = d => `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+const NOW = new Date();
+const cloudSave = data => { if (window._fbSave) window._fbSave(data); };
 
-function splash(cb){
-  const f=document.getElementById('spFill'),p=document.getElementById('spPct');let v=0;
-  const iv=setInterval(()=>{v+=Math.random()*16+5;if(v>=100){v=100;f.style.width='100%';p.textContent='100%';clearInterval(iv);setTimeout(()=>{document.getElementById('splash').classList.add('out');setTimeout(cb,700);},350);}else{f.style.width=v+'%';p.textContent=Math.round(v)+'%';}},140);
-}
+/* ═══ STATE ═══ */
+let dayOff = 0;
+let statsY = NOW.getFullYear(), statsM = NOW.getMonth();
+let workoutCalY = NOW.getFullYear(), workoutCalM = NOW.getMonth();
+let logKey = fmt(NOW);
+let wmActiveDay = 0; // 0=mon .. 6=sun
 
-function gl(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}}
-function sl(k,v){localStorage.setItem(k,JSON.stringify(v));}
+let userName = gl('ax_name', '');
+let userAge  = gl('ax_age', '');
+let obDone   = gl('ax_ob', false);
+let pwaShown = gl('ax_pwa', false);
+let weeklyShownKey  = gl('ax_wsk', '');
+let monthlyShownKey = gl('ax_msk', '');
+let celShown = false;
 
-let DD=gl('ax_d',{});
-let WD=gl('ax_w',{});
-let WL=gl('ax_wl',{});
-let RC=gl('ax_rc',[{id:'rc0',name:'Training'},{id:'rc1',name:'Nutrition'},{id:'rc2',name:'Recovery'},{id:'rc3',name:'Mind'}]);
-let RR=gl('ax_r',[
-  {id:'r1',name:'웨이트 트레이닝',sub:'60 MIN',cat:'rc0'},
-  {id:'r2',name:'런닝',sub:'5 KM',cat:'rc0'},
-  {id:'r3',name:'프로틴',sub:'48G+',cat:'rc1'},
-  {id:'r4',name:'크레아틴',sub:'5G',cat:'rc1'},
-  {id:'r5',name:'종합비타민',sub:'1 TAB',cat:'rc1'},
-  {id:'r6',name:'수면',sub:'8 HRS',cat:'rc2'},
-  {id:'r7',name:'일기 쓰기',sub:'',cat:'rc3'},
-  {id:'r8',name:'글쓰기',sub:'',cat:'rc3'},
-  {id:'r9',name:'독서',sub:'',cat:'rc3'},
+// Daily records: { "2025-01-01": { "r1": true, ... } }
+let DD = gl('ax_dd', {});
+// Workout logs: { "2025-01-01": { targets, time, rating, cond, memo } }
+let WL = gl('ax_wl', {});
+// PR records: { "벤치프레스": { weight: 100, reps: 5, date: "2025-01-01" } }
+let PR = gl('ax_pr', {});
+// Categories
+let RC = gl('ax_rc', [
+  {id:'rc0', name:'Training'},
+  {id:'rc1', name:'Nutrition'},
+  {id:'rc2', name:'Recovery'},
+  {id:'rc3', name:'Mind'}
 ]);
-let WC=gl('ax_wc',[{id:'wc0',name:'Chest'},{id:'wc1',name:'Back'},{id:'wc2',name:'Shoulder'},{id:'wc3',name:'Arms'},{id:'wc4',name:'Legs'},{id:'wc5',name:'Core'}]);
-let WW=gl('ax_wo',[]);
+// Routine items — 기본값 없음 (새 사용자는 빈 상태)
+let RR = gl('ax_rr', []);
+// Workout schedule: { mon:[{id,name,sets,reps}], tue:[], ... }
+const DAYS = ['mon','tue','wed','thu','fri','sat','sun'];
+const DAYS_KR = ['월','화','수','목','금','토','일'];
+const DAYS_EN = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const DAYS_SHORT = ['M','T','W','T','F','S','S'];
+let WW = gl('ax_ww', {mon:[],tue:[],wed:[],thu:[],fri:[],sat:[],sun:[]});
+// Rest days: { mon: true } → 해당 요일은 쉬는 날
+let REST_DAYS = gl('ax_rest', {});
+// Set data: { "2025-01-01": { "exId": [{kg,reps}, ...] } }
+let SD = gl('ax_sd', {});
+// Workout done: { "2025-01-01": true }
+let WO = gl('ax_wo', {});
 
-const NOW=new Date();
-let off=0,sY=NOW.getFullYear(),sM=NOW.getMonth(),wY=NOW.getFullYear(),wM=NOW.getMonth(),lk=fmt(NOW);
-
-function fmt(d){return`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`}
-function p2(n){return String(n).padStart(2,'0')}
-function disp(d){return`${d.getFullYear()}.${p2(d.getMonth()+1)}.${p2(d.getDate())} ${'Sun,Mon,Tue,Wed,Thu,Fri,Sat'.split(',')[d.getDay()]}`}
-function vd(){const d=new Date(NOW);d.setDate(d.getDate()+off);return d;}
-function vk(){return fmt(vd());}
-
-function init(){updH();renderR();renderW();updBot();}
-function updH(){
-  const d=vd();
-  document.getElementById('hDate').textContent=disp(d);
-  document.getElementById('hDateW').textContent=disp(d);
-  const lb=document.getElementById('dLbl');
-  lb.textContent=off===0?'Today':off===-1?'Yesterday':'2 Days Ago';
-  lb.className='dn-lbl'+(off===0?' today':'');
-  document.getElementById('dPrev').disabled=off<=-2;
-  document.getElementById('dNext').disabled=off>=0;
+/* ═══ SPLASH ═══ */
+function runSplash(cb) {
+  const fill = document.getElementById('spFill');
+  const pct  = document.getElementById('spPct');
+  let v = 0;
+  const iv = setInterval(() => {
+    v += Math.random() * 18 + 4;
+    if (v >= 100) {
+      v = 100; fill.style.width = '100%'; pct.textContent = '100%';
+      clearInterval(iv);
+      setTimeout(() => {
+        document.getElementById('splash').classList.add('out');
+        setTimeout(cb, 650);
+      }, 300);
+    } else {
+      fill.style.width = v + '%';
+      pct.textContent = Math.round(v) + '%';
+    }
+  }, 130);
 }
-function chDay(n){off=Math.max(-2,Math.min(0,off+n));updH();renderR();renderW();updBot();}
 
-function getRec(){const k=vk();if(!DD[k])DD[k]={};return DD[k];}
-function renderR(){
-  const rec=getRec();let done=0;
-  const el=document.getElementById('rList');el.innerHTML='';
-  RC.forEach(cat=>{
-    const items=RR.filter(r=>r.cat===cat.id);if(!items.length)return;
-    const blk=document.createElement('div');blk.className='cat-block';
-    blk.innerHTML=`<div class="cat-hdr"><div class="cat-name">${cat.name}</div></div>`;
-    items.forEach(r=>{
-      const gi=RR.indexOf(r);const chk=!!rec[r.id];if(chk)done++;
-      const d=document.createElement('div');d.className='row'+(chk?' done':'');
-      d.innerHTML=`<div class="row-num">${p2(gi+1)}</div><div class="row-name">${r.name}</div>${r.sub?`<div class="row-sub">${r.sub}</div>`:''}<div class="row-box">${chk?'✓':''}</div>`;
-      d.onclick=()=>togR(r.id);blk.appendChild(d);
+/* ═══ LOGIN ═══ */
+function signInGoogle() { if (window._fbLogin) window._fbLogin(); else showToast('Firebase 설정이 필요합니다.', true); }
+function offlineMode() { sl('ax_offline', true); document.getElementById('login').classList.remove('show'); checkOnboard(); }
+function doSignOut() { if (window._fbOut) window._fbOut(); }
+function showLogin() { document.getElementById('login').classList.add('show'); }
+
+/* ═══ ONBOARDING ═══ */
+let obStep = 1, obTmpName = '', obTmpAge = '', obTmpCats = JSON.parse(JSON.stringify(RC)), obActiveDay = 0;
+
+function startOnboard() {
+  obStep = 1;
+  document.getElementById('ob').classList.add('show');
+  renderObStep();
+}
+
+function renderObStep() {
+  const fill = Math.round(obStep / 3 * 100);
+  document.getElementById('obFill').style.width = fill + '%';
+  document.getElementById('obNextBtn').textContent = obStep === 3 ? '완료 →' : 'Next →';
+  const body = document.getElementById('obBody');
+  body.innerHTML = '';
+
+  if (obStep === 1) {
+    body.innerHTML = `
+      <div class="ob-step">Step 1 of 3</div>
+      <div class="ob-title">성함을<br><span>입력해 주세요.</span></div>
+      <div class="ob-subtitle">나이도 함께 입력해 주세요.</div>
+      <span class="ob-label">성함</span>
+      <input class="ob-input" id="obNameInp" placeholder="e.g. 김민준" value="${obTmpName}" maxlength="10" autocomplete="name">
+      <span class="ob-label" style="margin-top:16px;">나이</span>
+      <input class="ob-input" id="obAgeInp" placeholder="e.g. 26" value="${obTmpAge}" type="number" min="1" max="120">`;
+
+  } else if (obStep === 2) {
+    const chips = obTmpCats.map(c =>
+      `<div class="ob-chip on" data-id="${c.id}">${c.name}</div>`).join('');
+    body.innerHTML = `
+      <div class="ob-step">Step 2 of 3</div>
+      <div class="ob-title">DAILY<br><span>ROUTINE</span></div>
+      <div class="ob-subtitle">사용할 카테고리를 선택하세요.<br>루틴 항목은 이후 직접 추가할 수 있어요.</div>
+      <div class="ob-chips" id="obCatChips">${chips}</div>
+      <div class="ob-add-cat" onclick="openOv('ov-obCat')"><span style="font-size:15px">+</span> 카테고리 직접 추가</div>`;
+    document.getElementById('obCatChips').addEventListener('click', e => {
+      const chip = e.target.closest('.ob-chip');
+      if (chip) chip.classList.toggle('on');
+    });
+
+  } else if (obStep === 3) {
+    const tabs = DAYS.map((d, i) => {
+      const isRest = !!REST_DAYS[d];
+      const exs = WW[d] || [];
+      const statusText = isRest ? '휴식' : (exs.length ? exs.length + '개' : '—');
+      return `<button class="ob-day-tab${i === obActiveDay ? ' active' : ''}${isRest ? ' rest-day' : ''}" onclick="obSetDay(${i})">
+        <span class="day-letter">${DAYS_SHORT[i]}</span>
+        <span class="day-status">${statusText}</span>
+      </button>`;
+    }).join('');
+
+    const d = DAYS[obActiveDay];
+    const isRest = !!REST_DAYS[d];
+    const exs = WW[d] || [];
+    const exRows = exs.map(ex =>
+      `<div class="ob-ex-row">
+        <div class="ob-ex-name">${ex.name}</div>
+        <div class="ob-ex-meta">${ex.sets}세트 × ${ex.reps}회</div>
+        <button class="ob-ex-del" onclick="obDelEx('${d}','${ex.id}')">✕</button>
+      </div>`).join('');
+
+    body.innerHTML = `
+      <div class="ob-step">Step 3 of 3</div>
+      <div class="ob-title">WORK<br><span>OUT</span></div>
+      <div class="ob-subtitle">요일별 루틴을 구성하고<br>쉬는 날을 직접 지정하세요.</div>
+      <div class="ob-day-tabs">${tabs}</div>
+      <div class="ob-ex-box">
+        <div class="ob-ex-box-title">${DAYS_EN[obActiveDay]} — ${DAYS_KR[obActiveDay]}요일</div>
+        ${isRest
+          ? '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:10px;color:#e63022;text-align:center;padding:16px 0;">쉬는 날로 지정됨</div>'
+          : (exRows || '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:10px;color:#aaa;text-align:center;padding:16px 0;">등록된 운동 없음</div>')}
+      </div>
+      ${!isRest ? `<div class="ob-add-ex" onclick="openObAddEx()"><span style="font-size:15px">+</span> 운동 추가</div>` : ''}
+      <div class="ob-rest-toggle">
+        <span class="ob-rest-label">쉬는 날로 지정</span>
+        <div class="toggle${isRest ? ' on' : ''}" onclick="obToggleRest('${d}')"><div class="toggle-knob"></div></div>
+      </div>`;
+  }
+}
+
+function obSetDay(i) { obActiveDay = i; renderObStep(); }
+
+function obToggleRest(d) {
+  if (REST_DAYS[d]) delete REST_DAYS[d]; else REST_DAYS[d] = true;
+  sl('ax_rest', REST_DAYS);
+  renderObStep();
+}
+
+function openObAddEx() {
+  document.getElementById('addExDayLabel').textContent = DAYS_EN[obActiveDay] + ' — 운동 추가';
+  document.getElementById('addExName').value = '';
+  document.getElementById('addExSets').value = '';
+  document.getElementById('addExReps').value = '';
+  openOv('ov-addEx');
+  // override confirm button
+  document.querySelector('#ov-addEx .modal-btn.primary').onclick = doObAddEx;
+}
+
+function doObAddEx() {
+  const name = document.getElementById('addExName').value.trim();
+  const sets = parseInt(document.getElementById('addExSets').value) || 3;
+  const reps = parseInt(document.getElementById('addExReps').value) || 10;
+  if (!name) { showToast('이름을 입력하세요.', true); return; }
+  const d = DAYS[obActiveDay];
+  if (!WW[d]) WW[d] = [];
+  WW[d].push({ id: 'ex' + Date.now(), name, sets, reps });
+  sl('ax_ww', WW);
+  closeOv('ov-addEx');
+  document.querySelector('#ov-addEx .modal-btn.primary').onclick = doAddExercise;
+  renderObStep();
+}
+
+function obDelEx(day, id) {
+  WW[day] = (WW[day] || []).filter(e => e.id !== id);
+  sl('ax_ww', WW);
+  renderObStep();
+}
+
+function doAddObCat() {
+  const n = document.getElementById('obCatInput').value.trim();
+  if (!n) return;
+  const nc = { id: 'rc' + Date.now(), name: n };
+  obTmpCats.push(nc);
+  closeOv('ov-obCat');
+  renderObStep();
+}
+
+function obNext() {
+  if (obStep === 1) {
+    obTmpName = document.getElementById('obNameInp')?.value.trim() || '';
+    obTmpAge  = document.getElementById('obAgeInp')?.value.trim() || '';
+    userName = obTmpName; userAge = obTmpAge;
+    sl('ax_name', userName); sl('ax_age', userAge);
+  } else if (obStep === 2) {
+    const sel = [...document.querySelectorAll('#obCatChips .ob-chip.on')]
+      .map(c => ({ id: c.dataset.id, name: c.textContent.trim() }));
+    RC = sel.length ? sel : obTmpCats;
+    sl('ax_rc', RC);
+  } else {
+    showWelcome(); return;
+  }
+  obStep++;
+  renderObStep();
+}
+
+function obSkip() { showWelcome(); }
+
+function showWelcome() {
+  document.getElementById('ob').classList.remove('show');
+  document.getElementById('owName').textContent = (userName || '') + '.';
+  document.getElementById('ob-welcome').classList.add('show');
+}
+
+function finishOnboard() {
+  document.getElementById('ob-welcome').classList.remove('show');
+  obDone = true; sl('ax_ob', true);
+  showApp();
+}
+
+/* ═══ PWA ═══ */
+function showPwa() { document.getElementById('pwa').classList.add('show'); }
+function closePwa() { document.getElementById('pwa').classList.remove('show'); pwaShown = true; sl('ax_pwa', true); }
+function checkPwa() {
+  const standalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+  if (!standalone && !pwaShown) setTimeout(showPwa, 3000);
+}
+
+/* ═══ BOOT ═══ */
+function checkOnboard() {
+  if (!obDone) startOnboard(); else showApp();
+}
+
+function showApp() {
+  document.getElementById('app').classList.add('show');
+  updateHeaders(); renderRoutine(); renderWorkout(); updateBottom();
+  checkWeeklyPopup(); checkMonthlyPopup(); checkPwa();
+  // update account name
+  const acct = document.getElementById('acctName');
+  if (window._fbUser) acct.textContent = window._fbUser.displayName || '로그인됨';
+  else acct.textContent = '구글 로그인';
+  if (userName) document.getElementById('nameDesc').textContent = userName;
+}
+
+/* ═══ DATE HELPERS ═══ */
+const viewDate = () => { const d = new Date(NOW); d.setDate(d.getDate() + dayOff); return d; };
+const viewKey  = () => fmt(viewDate());
+const dayIndex = d => (d.getDay() + 6) % 7; // 0=Mon
+
+function fmtDisp(d) {
+  const dn = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  return `${d.getFullYear()}.${p2(d.getMonth()+1)}.${p2(d.getDate())} ${dn[d.getDay()]}`;
+}
+
+function changeDay(n) {
+  dayOff = Math.max(-2, Math.min(0, dayOff + n));
+  updateHeaders(); renderRoutine(); renderWorkout(); updateBottom();
+}
+
+/* ═══ HEADERS ═══ */
+function updateHeaders() {
+  const d = viewDate(), ds = fmtDisp(d);
+  document.getElementById('dEye1').textContent = userName ? `${userName}의 Daily Routine` : 'Find Your Balance with "AXIS"';
+  document.getElementById('dEye2').textContent = ds;
+  document.getElementById('wEye1').textContent = userName ? `${userName}의 Workout` : 'Find Your Balance with "AXIS"';
+  document.getElementById('wEye2').textContent = ds;
+
+  const dl = document.getElementById('dLabel'), wl = document.getElementById('wLabel');
+  const lbl = dayOff === 0 ? 'Today' : dayOff === -1 ? 'Yesterday' : '2 Days Ago';
+  dl.textContent = wl.textContent = lbl;
+  dl.className = 'dn-label' + (dayOff === 0 ? ' today' : '');
+  wl.className = 'dn-label' + (dayOff === 0 ? ' today' : '');
+
+  document.getElementById('dPrev').disabled = dayOff <= -2;
+  document.getElementById('dNext').disabled = dayOff >= 0;
+  document.getElementById('wPrev').disabled = dayOff <= -2;
+  document.getElementById('wNext').disabled = dayOff >= 0;
+
+  const memo = document.getElementById('dailyMemo');
+  if (memo) memo.value = gl('ax_memo_' + viewKey(), '');
+}
+
+/* ═══ ROUTINE RENDER ═══ */
+function getRec() { if (!DD[viewKey()]) DD[viewKey()] = {}; return DD[viewKey()]; }
+
+function renderRoutine() {
+  const rec = getRec(); let done = 0, total = 0;
+  const el = document.getElementById('routineList'); el.innerHTML = '';
+
+  RC.forEach(cat => {
+    const items = RR.filter(r => r.cat === cat.id);
+    if (!items.length) return;
+    const blk = document.createElement('div'); blk.className = 'cat-block';
+    blk.innerHTML = `<div class="cat-header">${cat.name}</div>`;
+    items.forEach(r => {
+      const idx = RR.indexOf(r), chk = !!rec[r.id];
+      if (chk) done++; total++;
+      const badge = r.freq === 'weekly' && r.freqN ? `<div class="r-badge">주${r.freqN}회</div>` : '';
+      const row = document.createElement('div'); row.className = 'r-row' + (chk ? ' done' : '');
+      row.innerHTML = `<div class="r-num">${p2(idx+1)}</div><div class="r-name">${r.name}</div>${r.sub ? `<div class="r-sub">${r.sub}</div>` : ''}${badge}<div class="r-check">${chk ? '✓' : ''}</div>`;
+      row.onclick = () => toggleRoutine(r.id);
+      blk.appendChild(row);
     });
     el.appendChild(blk);
   });
-  const uncat=RR.filter(r=>!RC.find(c=>c.id===r.cat));
-  if(uncat.length){
-    const blk=document.createElement('div');blk.className='cat-block';
-    blk.innerHTML=`<div class="cat-hdr"><div class="cat-name">Other</div></div>`;
-    uncat.forEach(r=>{const gi=RR.indexOf(r);const chk=!!rec[r.id];if(chk)done++;const d=document.createElement('div');d.className='row'+(chk?' done':'');d.innerHTML=`<div class="row-num">${p2(gi+1)}</div><div class="row-name">${r.name}</div>${r.sub?`<div class="row-sub">${r.sub}</div>`:''}<div class="row-box">${chk?'✓':''}</div>`;d.onclick=()=>togR(r.id);blk.appendChild(d);});
+
+  // uncategorized
+  const uncat = RR.filter(r => !RC.find(c => c.id === r.cat));
+  if (uncat.length) {
+    const blk = document.createElement('div'); blk.className = 'cat-block';
+    blk.innerHTML = `<div class="cat-header">Other</div>`;
+    uncat.forEach(r => {
+      const idx = RR.indexOf(r), chk = !!rec[r.id];
+      if (chk) done++; total++;
+      const row = document.createElement('div'); row.className = 'r-row' + (chk ? ' done' : '');
+      row.innerHTML = `<div class="r-num">${p2(idx+1)}</div><div class="r-name">${r.name}</div><div class="r-check">${chk ? '✓' : ''}</div>`;
+      row.onclick = () => toggleRoutine(r.id);
+      blk.appendChild(row);
+    });
     el.appendChild(blk);
   }
-  const pct=RR.length?Math.round(done/RR.length*100):0;
-  document.getElementById('dFill').style.width=pct+'%';
-  document.getElementById('dPct').textContent=pct+'%';
-  document.getElementById('dCnt').textContent=`${done} / ${RR.length}`;
-  document.getElementById('dMsg').textContent=['Start your day.','Keep going.','Halfway done.','Almost there.','Promise kept.'][pct===0?0:pct<30?1:pct<60?2:pct<100?3:4];
+
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('dFill').style.width = pct + '%';
+  document.getElementById('dPct').textContent = pct + '%';
+  document.getElementById('dCount').textContent = `${done} / ${total}`;
+  const msgs = ['Start your day.','Keep going.','Halfway done.','Almost there.','Promise kept.'];
+  document.getElementById('dMsg').textContent = msgs[pct === 0 ? 0 : pct < 30 ? 1 : pct < 60 ? 2 : pct < 100 ? 3 : 4];
+  if (pct === 100 && total > 0 && dayOff === 0 && !celShown) { celShown = true; setTimeout(() => document.getElementById('celebrate').classList.add('show'), 400); }
 }
-function togR(id){const r=getRec();r[id]=!r[id];sl('ax_d',DD);renderR();updBot();toast(r[id]?'Checked.':'Unchecked.');}
 
-function openAddR(){document.getElementById('rCatSel').innerHTML=RC.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');document.getElementById('rName').value='';document.getElementById('rSub').value='';openOv('ov-addR');}
-function doAddR(){const name=document.getElementById('rName').value.trim();if(!name){toast('Name required.',true);return;}RR.push({id:'r'+Date.now(),name,sub:document.getElementById('rSub').value.trim(),cat:document.getElementById('rCatSel').value});sl('ax_r',RR);closeOv('ov-addR');renderR();updBot();toast('Added.');}
-
-function openManR(){
-  const ml=document.getElementById('manRList');ml.innerHTML='';
-  RR.forEach(r=>{const cat=RC.find(c=>c.id===r.cat);const row=document.createElement('div');row.className='dl-row';row.innerHTML=`<div><div class="dl-name">${r.name}</div><div class="dl-sub">${cat?cat.name:'Other'}${r.sub?' · '+r.sub:''}</div></div><button class="dl-del" onclick="delR('${r.id}')">Delete</button>`;ml.appendChild(row);});
-  const cl=document.getElementById('manRCat');cl.innerHTML='';
-  RC.forEach(c=>{const row=document.createElement('div');row.className='dl-row';row.innerHTML=`<div class="dl-name">${c.name}</div><button class="dl-del" onclick="delRC('${c.id}')">Delete</button>`;cl.appendChild(row);});
-  openOv('ov-manR');
+function toggleRoutine(id) {
+  const r = getRec(); r[id] = !r[id];
+  sl('ax_dd', DD); cloudSave({ DD });
+  renderRoutine(); updateBottom();
+  showToast(r[id] ? 'Checked.' : 'Unchecked.');
 }
-function delR(id){RR=RR.filter(r=>r.id!==id);sl('ax_r',RR);renderR();updBot();openManR();toast('Deleted.');}
-function delRC(id){RC=RC.filter(c=>c.id!==id);sl('ax_rc',RC);renderR();openManR();toast('Deleted.');}
-function addRCat(){const n=document.getElementById('newRCat').value.trim();if(!n)return;RC.push({id:'rc'+Date.now(),name:n});sl('ax_rc',RC);document.getElementById('newRCat').value='';openManR();}
 
-function getWRec(){const k=vk();if(!WD[k])WD[k]={};return WD[k];}
-function renderW(){
-  const rec=getWRec();let done=0;
-  const el=document.getElementById('wList');el.innerHTML='';
-  WC.forEach(cat=>{
-    const items=WW.filter(w=>w.cat===cat.id);if(!items.length)return;
-    const blk=document.createElement('div');blk.className='cat-block';
-    blk.innerHTML=`<div class="cat-hdr"><div class="cat-name">${cat.name}</div></div>`;
-    items.forEach(w=>{const gi=WW.indexOf(w);const chk=!!rec[w.id];if(chk)done++;const d=document.createElement('div');d.className='row'+(chk?' done':'');d.innerHTML=`<div class="row-num">${p2(gi+1)}</div><div class="row-name">${w.name}</div><div class="row-sub">${w.weight||'-'} · ${w.reps}회 · ${w.sets}세트</div><div class="row-box">${chk?'✓':''}</div>`;d.onclick=()=>togW(w.id);blk.appendChild(d);});
+function saveMemo() { sl('ax_memo_' + viewKey(), document.getElementById('dailyMemo').value); }
+
+/* ─ ADD ROUTINE ─ */
+let curFreq = 'daily', curFreqN = 1;
+function openAddRoutine() {
+  curFreq = 'daily'; curFreqN = 1;
+  document.getElementById('rCatSel').innerHTML = RC.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  document.getElementById('rNameInput').value = '';
+  document.getElementById('rSubInput').value = '';
+  document.querySelectorAll('#freqBtns .freq-btn').forEach((b, i) => b.classList.toggle('on', i === 0));
+  document.getElementById('freqNWrap').style.display = 'none';
+  buildFreqN(); openOv('ov-addRoutine');
+}
+function selFreq(btn, f) {
+  curFreq = f;
+  document.querySelectorAll('#freqBtns .freq-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('freqNWrap').style.display = f === 'weekly' ? 'block' : 'none';
+}
+function buildFreqN() {
+  const row = document.getElementById('freqNBtns'); row.innerHTML = '';
+  [1,2,3,4,5,6].forEach(n => {
+    const b = document.createElement('button'); b.className = 'freq-n-btn' + (n === curFreqN ? ' on' : '');
+    b.textContent = n; b.onclick = () => { curFreqN = n; buildFreqN(); };
+    row.appendChild(b);
+  });
+}
+function doAddRoutine() {
+  const name = document.getElementById('rNameInput').value.trim();
+  if (!name) { showToast('이름을 입력하세요.', true); return; }
+  RR.push({ id: 'r' + Date.now(), cat: document.getElementById('rCatSel').value, name, sub: document.getElementById('rSubInput').value.trim(), freq: curFreq, freqN: curFreq === 'weekly' ? curFreqN : 0 });
+  sl('ax_rr', RR); cloudSave({ RR }); closeOv('ov-addRoutine'); renderRoutine(); updateBottom(); showToast('추가됐어요.');
+}
+function openManageRoutine() {
+  const ml = document.getElementById('manageRoutineList'); ml.innerHTML = '';
+  RR.forEach(r => {
+    const cat = RC.find(c => c.id === r.cat);
+    const row = document.createElement('div'); row.className = 'manage-row';
+    row.innerHTML = `<div><div class="manage-name">${r.name}</div><div class="manage-sub">${cat ? cat.name : 'Other'}${r.sub ? ' · ' + r.sub : ''}${r.freq === 'weekly' ? ' · 주' + r.freqN + '회' : ''}</div></div><button class="manage-del" onclick="delRoutine('${r.id}')">삭제</button>`;
+    ml.appendChild(row);
+  });
+  const cl = document.getElementById('manageCatList'); cl.innerHTML = '';
+  RC.forEach(c => {
+    const row = document.createElement('div'); row.className = 'manage-row';
+    row.innerHTML = `<div class="manage-name">${c.name}</div><button class="manage-del" onclick="delCategory('${c.id}')">삭제</button>`;
+    cl.appendChild(row);
+  });
+  openOv('ov-manageRoutine');
+}
+function delRoutine(id) { RR = RR.filter(r => r.id !== id); sl('ax_rr', RR); cloudSave({ RR }); renderRoutine(); updateBottom(); openManageRoutine(); showToast('삭제됐어요.'); }
+function delCategory(id) { RC = RC.filter(c => c.id !== id); sl('ax_rc', RC); cloudSave({ RC }); renderRoutine(); openManageRoutine(); showToast('삭제됐어요.'); }
+function addCategory() {
+  const n = document.getElementById('newCatInput').value.trim(); if (!n) return;
+  RC.push({ id: 'rc' + Date.now(), name: n }); sl('ax_rc', RC); cloudSave({ RC });
+  document.getElementById('newCatInput').value = ''; openManageRoutine();
+}
+function openEditName() { document.getElementById('editNameInput').value = userName; openOv('ov-editName'); }
+function saveEditName() {
+  userName = document.getElementById('editNameInput').value.trim(); sl('ax_name', userName);
+  cloudSave({ userName }); closeOv('ov-editName'); updateHeaders();
+  document.getElementById('nameDesc').textContent = userName; showToast('저장됐어요.');
+}
+
+/* ═══ WORKOUT RENDER ═══ */
+function getTodayExs() { return WW[DAYS[dayIndex(viewDate())]] || []; }
+function isRestDay() { return !!REST_DAYS[DAYS[dayIndex(viewDate())]]; }
+
+function getSetData(dk, exId, defaultSets, defaultReps) {
+  if (!SD[dk]) SD[dk] = {};
+  if (!SD[dk][exId]) {
+    SD[dk][exId] = Array.from({ length: defaultSets || 3 }, () => ({ kg: '', reps: String(defaultReps || '') }));
+  }
+  return SD[dk][exId];
+}
+function saveSD() { sl('ax_sd', SD); cloudSave({ SD }); }
+function calcVol(sets) { return sets.reduce((s, r) => s + (parseFloat(r.kg) || 0) * (parseInt(r.reps) || 0), 0); }
+
+function renderWorkout() {
+  const el = document.getElementById('workoutList'); el.innerHTML = '';
+  const dk = viewKey();
+  const di = dayIndex(viewDate());
+  const exs = getTodayExs();
+  const rest = isRestDay();
+
+  // Day header
+  const dh = document.createElement('div'); dh.className = 'wo-day-header';
+  dh.innerHTML = `<div class="wo-day-name">${DAYS_EN[di]}</div><div class="wo-day-type">${rest ? 'Rest Day' : DAYS_KR[di] + '요일'}</div>`;
+  el.appendChild(dh);
+
+  if (rest) {
+    const rv = document.createElement('div'); rv.className = 'wo-rest-view';
+    rv.innerHTML = `<div class="wo-rest-icon">💤</div><div class="wo-rest-title">Rest Day</div><div class="wo-rest-sub">오늘은 쉬는 날이에요.<br>내일도 화이팅!</div>`;
+    el.appendChild(rv);
+    document.getElementById('wFill').style.width = '0%';
+    document.getElementById('wPct').textContent = '—';
+    document.getElementById('wMsg').textContent = 'Rest day.';
+    document.getElementById('wCount').textContent = '휴식';
+    return;
+  }
+
+  if (!exs.length) {
+    const ev = document.createElement('div'); ev.className = 'wo-rest-view';
+    ev.innerHTML = `<div class="wo-rest-icon">📋</div><div class="wo-rest-title" style="font-size:28px">No Plan</div><div class="wo-rest-sub">Manage 탭에서 운동을 추가하세요.</div>`;
+    el.appendChild(ev);
+    document.getElementById('wFill').style.width = '0%';
+    document.getElementById('wPct').textContent = '—';
+    document.getElementById('wMsg').textContent = 'Set up your plan.';
+    document.getElementById('wCount').textContent = '—';
+    return;
+  }
+
+  let totalVol = 0;
+  exs.forEach(ex => {
+    const sets = getSetData(dk, ex.id, ex.sets, ex.reps);
+    const vol = calcVol(sets); totalVol += vol;
+
+    const lw = new Date(viewDate()); lw.setDate(lw.getDate() - 7);
+    const lwSets = (SD[fmt(lw)] && SD[fmt(lw)][ex.id]) || [];
+    const lwVol = calcVol(lwSets); const delta = vol - lwVol;
+    const deltaStr = delta > 0 ? `↑ +${delta.toLocaleString()}kg` : delta < 0 ? `↓ ${Math.abs(delta).toLocaleString()}kg` : '';
+    const deltaColor = delta > 0 ? '#52b788' : delta < 0 ? '#e63022' : '#aaa';
+    const pr = PR[ex.name];
+
+    const setsHtml = sets.map((s, si) => `
+      <div class="wo-set-row">
+        <div class="wo-set-label">SET ${p2(si+1)}</div>
+        <input class="wo-set-input" placeholder="kg" value="${s.kg}" type="number" min="0" step="0.5"
+          oninput="updSet('${ex.id}',${si},'kg',this.value,'${dk}','${ex.id}')">
+        <div class="wo-set-x">×</div>
+        <input class="wo-set-input" placeholder="회" value="${s.reps}" type="number" min="0"
+          oninput="updSet('${ex.id}',${si},'reps',this.value,'${dk}','${ex.id}')">
+      </div>`).join('');
+
+    const blk = document.createElement('div'); blk.className = 'wo-ex-block';
+    blk.innerHTML = `
+      <div class="wo-ex-name">${ex.name}</div>
+      ${setsHtml}
+      <div class="wo-set-add" onclick="addSet('${ex.id}','${dk}')"><span style="font-size:14px">+</span> 세트 추가</div>
+      <div class="wo-vol-row">
+        <div>
+          <div class="wo-vol-label">오늘 볼륨</div>
+          <div class="wo-vol-num" id="vol_${ex.id}">${vol > 0 ? vol.toLocaleString() + 'kg' : '—'}</div>
+          ${pr ? `<div class="wo-pr">PR: ${pr.weight}kg (${pr.date})</div>` : ''}
+        </div>
+        <div class="wo-vol-delta" style="color:${deltaColor}" id="delta_${ex.id}">${deltaStr}</div>
+      </div>`;
     el.appendChild(blk);
   });
-  const pct=WW.length?Math.round(done/WW.length*100):0;
-  document.getElementById('wFill').style.width=pct+'%';
-  document.getElementById('wPct').textContent=pct+'%';
-  document.getElementById('wCnt').textContent=`${done} / ${WW.length}`;
-  document.getElementById('wMsg').textContent=['Start training.','Keep going.','Halfway done.','Almost there.','Session complete.'][pct===0?0:pct<30?1:pct<60?2:pct<100?3:4];
-}
-function togW(id){const r=getWRec();r[id]=!r[id];sl('ax_w',WD);renderW();toast(r[id]?'Checked.':'Unchecked.');}
 
-function openAddW(){document.getElementById('wCatSel').innerHTML=WC.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');['wName','wWeight','wReps','wSets'].forEach(id=>document.getElementById(id).value='');openOv('ov-addW');}
-function doAddW(){const name=document.getElementById('wName').value.trim();const reps=document.getElementById('wReps').value.trim();const sets=document.getElementById('wSets').value.trim();if(!name||!reps||!sets){toast('필수 항목을 입력하세요.',true);return;}WW.push({id:'w'+Date.now(),name,weight:document.getElementById('wWeight').value.trim(),reps,sets,cat:document.getElementById('wCatSel').value});sl('ax_wo',WW);closeOv('ov-addW');renderW();toast('Added.');}
+  const isDone = !!WO[dk];
+  const tb = document.createElement('div'); tb.className = 'wo-total-bar';
+  tb.innerHTML = `<div class="wo-total-label">총 볼륨</div><div class="wo-total-num" id="totalVol">${totalVol > 0 ? totalVol.toLocaleString() + 'kg' : '—'}</div>`;
+  el.appendChild(tb);
 
-function openManW(){
-  const ml=document.getElementById('manWList');ml.innerHTML='';
-  WW.forEach(w=>{const cat=WC.find(c=>c.id===w.cat);const row=document.createElement('div');row.className='dl-row';row.innerHTML=`<div><div class="dl-name">${w.name}</div><div class="dl-sub">${cat?cat.name:'Other'} · ${w.weight||'-'} · ${w.reps}회 · ${w.sets}세트</div></div><button class="dl-del" onclick="delW('${w.id}')">Delete</button>`;ml.appendChild(row);});
-  const cl=document.getElementById('manWCat');cl.innerHTML='';
-  WC.forEach(c=>{const row=document.createElement('div');row.className='dl-row';row.innerHTML=`<div class="dl-name">${c.name}</div><button class="dl-del" onclick="delWC('${c.id}')">Delete</button>`;cl.appendChild(row);});
-  openOv('ov-manW');
-}
-function delW(id){WW=WW.filter(w=>w.id!==id);sl('ax_wo',WW);renderW();openManW();toast('Deleted.');}
-function delWC(id){WC=WC.filter(c=>c.id!==id);sl('ax_wc',WC);renderW();openManW();toast('Deleted.');}
-function addWCat(){const n=document.getElementById('newWCat').value.trim();if(!n)return;WC.push({id:'wc'+Date.now(),name:n});sl('ax_wc',WC);document.getElementById('newWCat').value='';openManW();}
+  const cb = document.createElement('button'); cb.className = 'wo-complete-btn' + (isDone ? ' done' : '');
+  cb.textContent = isDone ? '✓ 완료됨' : '오늘 운동 완료';
+  cb.onclick = () => completeWorkout(dk);
+  el.appendChild(cb);
 
-function loadLog(key){
-  lk=key;const lg=WL[key]||{};
-  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',(lg.targets||[]).includes(c.dataset.v)));
-  document.getElementById('wlogTime').value=lg.time||'';
-  document.querySelectorAll('.rate-btn').forEach(b=>b.classList.toggle('on',b.dataset.v==lg.rating));
-  document.querySelectorAll('.cond-btn').forEach(b=>b.classList.toggle('on',b.dataset.v===lg.cond));
-  document.getElementById('wlogMemo').value=lg.memo||'';
-  const d=new Date(key+'T00:00:00');
-  document.getElementById('wlogTitle').textContent=`${disp(d)} Log`;
-}
-function togChip(el){el.classList.toggle('on');}
-function selRate(el){document.querySelectorAll('.rate-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
-function selCond(el){document.querySelectorAll('.cond-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
-function saveLog(){
-  WL[lk]={targets:[...document.querySelectorAll('.chip.on')].map(c=>c.dataset.v),time:document.getElementById('wlogTime').value,rating:document.querySelector('.rate-btn.on')?.dataset.v||'',cond:document.querySelector('.cond-btn.on')?.dataset.v||'',memo:document.getElementById('wlogMemo').value.trim()};
-  sl('ax_wl',WL);renderWCal();toast('Saved.');
+  // progress
+  const compSets = exs.reduce((s, ex) => s + getSetData(dk, ex.id, ex.sets, ex.reps).filter(r => r.kg && r.reps).length, 0);
+  const totSets  = exs.reduce((s, ex) => s + getSetData(dk, ex.id, ex.sets, ex.reps).length, 0);
+  const pct = totSets ? Math.round(compSets / totSets * 100) : 0;
+  document.getElementById('wFill').style.width = pct + '%';
+  document.getElementById('wPct').textContent = pct + '%';
+  document.getElementById('wCount').textContent = `${compSets} / ${totSets}`;
+  const wmsgs = ['Start training.','Keep going.','Halfway there.','Almost done!','Session complete!'];
+  document.getElementById('wMsg').textContent = wmsgs[pct === 0 ? 0 : pct < 30 ? 1 : pct < 60 ? 2 : pct < 100 ? 3 : 4];
 }
 
-function updBot(){
-  const rec=getRec();const done=RR.filter(r=>rec[r.id]).length;
-  const pct=RR.length?Math.round(done/RR.length*100):0;
-  document.getElementById('botMsg').textContent=['Start your day','Keep going','Halfway done','Almost there','Promise kept'][pct===0?0:pct<30?1:pct<60?2:pct<100?3:4];
-  document.getElementById('botCnt').textContent=`${done}/${RR.length}`;
+function updSet(exId, si, field, val, dk) {
+  const sets = getSetData(dk, exId);
+  sets[si][field] = val; saveSD();
+  const vol = calcVol(sets);
+  const ve = document.getElementById('vol_' + exId);
+  if (ve) ve.textContent = vol > 0 ? vol.toLocaleString() + 'kg' : '—';
+  // total vol
+  const exs = getTodayExs();
+  const tv = exs.reduce((s, ex) => s + calcVol(getSetData(dk, ex.id, ex.sets, ex.reps)), 0);
+  const tn = document.getElementById('totalVol'); if (tn) tn.textContent = tv > 0 ? tv.toLocaleString() + 'kg' : '—';
+  // progress
+  const cs = exs.reduce((s, ex) => s + getSetData(dk, ex.id, ex.sets, ex.reps).filter(r => r.kg && r.reps).length, 0);
+  const ts = exs.reduce((s, ex) => s + getSetData(dk, ex.id, ex.sets, ex.reps).length, 0);
+  const pct = ts ? Math.round(cs / ts * 100) : 0;
+  document.getElementById('wFill').style.width = pct + '%';
+  document.getElementById('wPct').textContent = pct + '%';
+  document.getElementById('wCount').textContent = `${cs} / ${ts}`;
 }
 
-function gotoPage(p){document.getElementById('pg-daily').style.display=p==='daily'?'block':'none';document.getElementById('pg-workout').style.display=p==='workout'?'block':'none';if(p==='workout')renderW();}
-function dTab(v,btn){document.querySelectorAll('#pg-daily .view').forEach(e=>e.classList.remove('on'));document.querySelectorAll('#pg-daily .tb').forEach(e=>e.classList.remove('on'));document.getElementById('vd-'+v).classList.add('on');btn.classList.add('on');if(v==='stats')renderDStats();}
-function wTab(v,btn){document.querySelectorAll('#pg-workout .view').forEach(e=>e.classList.remove('on'));document.querySelectorAll('#pg-workout .tb').forEach(e=>e.classList.remove('on'));document.getElementById('vw-'+v).classList.add('on');btn.classList.add('on');if(v==='cal'){renderWCal();loadLog(fmt(NOW));}}
+function addSet(exId, dk) {
+  const sets = getSetData(dk, exId);
+  sets.push({ kg: '', reps: '' }); saveSD(); renderWorkout();
+}
 
-function pClass(p){return p===0?'p0':p<10?'p0':p<30?'p10':p<50?'p30':p<70?'p50':p<90?'p70':p<100?'p90':'p100';}
-function renderDStats(){
-  const dim=new Date(sY,sM+1,0).getDate(),fd=new Date(sY,sM,1).getDay();
-  document.getElementById('dMoLbl').textContent='JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC'.split(',')[sM]+' '+sY;
-  const ts=fmt(NOW),grid=document.getElementById('dCal');grid.innerHTML='';
-  for(let i=0;i<fd;i++){const c=document.createElement('div');c.className='cc';grid.appendChild(c);}
-  for(let d=1;d<=dim;d++){
-    const key=`${sY}-${p2(sM+1)}-${p2(d)}`;const cell=document.createElement('div');cell.textContent=d;
-    if(key>ts)cell.className='cc fut';
-    else if(key===ts)cell.className='cc today';
-    else{const rec=DD[key];const cnt=rec?Object.values(rec).filter(Boolean).length:0;const pct=RR.length?Math.round(cnt/RR.length*100):0;cell.className='cc '+pClass(pct);}
-    grid.appendChild(cell);
+function completeWorkout(dk) {
+  WO[dk] = true; sl('ax_wo', WO); cloudSave({ WO });
+  let newPR = false;
+  getTodayExs().forEach(ex => {
+    const sets = getSetData(dk, ex.id, ex.sets, ex.reps);
+    let best = null;
+    sets.forEach(s => { const k = parseFloat(s.kg) || 0; if (k > 0 && (!best || k > best)) best = k; });
+    if (best) {
+      const prev = PR[ex.name];
+      if (!prev || best > prev.weight) { PR[ex.name] = { weight: best, date: fmt(viewDate()) }; sl('ax_pr', PR); cloudSave({ PR }); newPR = true; }
+    }
+  });
+  renderWorkout(); showToast(newPR ? '완료! 🎉 PR 달성!' : '운동 완료!');
+}
+
+/* ─ WORKOUT MANAGE TAB ─ */
+function renderWMDayTabs() {
+  const tabs = document.getElementById('wmDayTabs'); tabs.innerHTML = '';
+  DAYS.forEach((d, i) => {
+    const isRest = !!REST_DAYS[d];
+    const btn = document.createElement('button');
+    btn.className = 'wm-day-tab' + (i === wmActiveDay ? ' on' : '') + (isRest ? ' rest-tab' : '');
+    btn.innerHTML = `${DAYS_SHORT[i]}<br><span style="font-size:7px">${isRest ? '휴' : (WW[d]||[]).length+'개'}</span>`;
+    btn.onclick = () => { wmActiveDay = i; renderWMDayTabs(); renderWMDayContent(); };
+    tabs.appendChild(btn);
+  });
+}
+
+function renderWMDayContent() {
+  const d = DAYS[wmActiveDay]; const isRest = !!REST_DAYS[d]; const exs = WW[d] || [];
+  const cont = document.getElementById('wmDayContent'); cont.innerHTML = '';
+
+  const top = document.createElement('div'); top.className = 'wm-day-top';
+  top.innerHTML = `
+    <div class="wm-day-title">${DAYS_EN[wmActiveDay]}</div>
+    <div class="wm-rest-toggle-wrap">
+      <span class="wm-rest-label">쉬는 날</span>
+      <div class="toggle${isRest ? ' on' : ''}" onclick="wmToggleRest('${d}')"><div class="toggle-knob"></div></div>
+    </div>`;
+  cont.appendChild(top);
+
+  if (isRest) {
+    const rp = document.createElement('div'); rp.className = 'wm-rest-placeholder';
+    rp.textContent = '쉬는 날로 지정됨'; cont.appendChild(rp); return;
   }
-  let tD=0,pD=0,tC=0;const rc={};RR.forEach(r=>rc[r.id]=0);
-  for(let d=1;d<=dim;d++){const key=`${sY}-${p2(sM+1)}-${p2(d)}`;if(key>ts)continue;tD++;const rec=DD[key];if(!rec)continue;let cnt=0;RR.forEach(r=>{if(rec[r.id]){rc[r.id]++;cnt++;tC++;}});if(cnt===RR.length&&RR.length)pD++;}
-  const avg=tD&&RR.length?Math.round(tC/(tD*RR.length)*100):0;
-  document.getElementById('dStats').innerHTML=`<div class="stat-row"><div class="stat-lbl">Perfect Days</div><div class="stat-val">${pD} <small>days</small></div></div><div class="stat-row"><div class="stat-lbl">Avg. Rate</div><div class="stat-val">${avg} <small>%</small></div></div><div class="stat-row"><div class="stat-lbl">Total Checks</div><div class="stat-val">${tC} <small>times</small></div></div>`;
-  const bars=document.getElementById('dBars');bars.innerHTML='';
-  RR.forEach(r=>{const pct=tD?Math.round(rc[r.id]/tD*100):0;bars.innerHTML+=`<div class="bar-row"><div class="bar-nm">${r.name}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><div class="bar-pct">${pct}%</div></div>`;});
-}
-function chMo(n){sM+=n;if(sM<0){sM=11;sY--;}if(sM>11){sM=0;sY++;}renderDStats();}
 
-function renderWCal(){
-  const dim=new Date(wY,wM+1,0).getDate(),fd=new Date(wY,wM,1).getDay();
-  document.getElementById('wMoLbl').textContent='JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC'.split(',')[wM]+' '+wY;
-  const ts=fmt(NOW),grid=document.getElementById('wCal');grid.innerHTML='';
-  for(let i=0;i<fd;i++){const c=document.createElement('div');c.className='cc';grid.appendChild(c);}
-  let tD=0;
-  for(let d=1;d<=dim;d++){
-    const key=`${wY}-${p2(wM+1)}-${p2(d)}`;const cell=document.createElement('div');cell.textContent=d;
-    if(key>ts)cell.className='cc fut';
-    else if(key===ts){cell.className='cc today';cell.onclick=()=>loadLog(key);}
-    else{const rec=WD[key];const cnt=rec?Object.values(rec).filter(Boolean).length:0;if(cnt>0){cell.className='cc trained';tD++;}else cell.className='cc p0';cell.onclick=()=>loadLog(key);}
-    grid.appendChild(cell);
+  if (exs.length) {
+    const list = document.createElement('div'); list.className = 'wm-ex-list';
+    exs.forEach(ex => {
+      const row = document.createElement('div'); row.className = 'wm-ex-row';
+      row.innerHTML = `
+        <div class="wm-ex-info">
+          <div class="wm-ex-name">${ex.name}</div>
+          <div class="wm-ex-meta">${ex.sets}세트 × ${ex.reps}회</div>
+        </div>
+        <button class="wm-ex-del" onclick="wmDelEx('${d}','${ex.id}')">삭제</button>`;
+      list.appendChild(row);
+    });
+    cont.appendChild(list);
+  } else {
+    const empty = document.createElement('div'); empty.className = 'wm-empty';
+    empty.textContent = '등록된 운동이 없어요.'; cont.appendChild(empty);
   }
-  document.getElementById('wStats').innerHTML=`<div class="stat-row"><div class="stat-lbl">Trained Days</div><div class="stat-val">${tD} <small>days</small></div></div>`;
+
+  const addBtn = document.createElement('div'); addBtn.className = 'wm-add-btn';
+  addBtn.innerHTML = `<span style="font-size:16px">+</span> 운동 추가`;
+  addBtn.onclick = () => openWMAddEx(d);
+  cont.appendChild(addBtn);
 }
-function chWMo(n){wM+=n;if(wM<0){wM=11;wY--;}if(wM>11){wM=0;wY++;}renderWCal();}
 
-function doExport(){document.getElementById('expTxt').value=JSON.stringify({DD,WD,WL,RR,WW,RC,WC});openOv('ov-export');}
-function copyExp(){const t=document.getElementById('expTxt');t.select();document.execCommand('copy');toast('Copied.');}
-function openImport(){document.getElementById('impTxt').value='';openOv('ov-import');}
-function doImport(){
-  try{
-    const imp=JSON.parse(document.getElementById('impTxt').value.trim());
-    if(imp.DD){DD={...DD,...imp.DD};sl('ax_d',DD);}if(imp.WD){WD={...WD,...imp.WD};sl('ax_w',WD);}if(imp.WL){WL={...WL,...imp.WL};sl('ax_wl',WL);}
-    if(imp.RR){RR=imp.RR;sl('ax_r',RR);}if(imp.WW){WW=imp.WW;sl('ax_wo',WW);}if(imp.RC){RC=imp.RC;sl('ax_rc',RC);}if(imp.WC){WC=imp.WC;sl('ax_wc',WC);}
-    renderR();renderW();updBot();closeOv('ov-import');toast('Imported.');
-  }catch{toast('Invalid data.',true);}
+function wmToggleRest(d) {
+  if (REST_DAYS[d]) delete REST_DAYS[d]; else REST_DAYS[d] = true;
+  sl('ax_rest', REST_DAYS); cloudSave({ REST_DAYS });
+  renderWMDayTabs(); renderWMDayContent(); renderWorkout();
 }
-function resetD(){DD={};sl('ax_d',DD);renderR();updBot();toast('Reset.');}
-function resetW(){WD={};WL={};sl('ax_w',WD);sl('ax_wl',WL);WW=[];sl('ax_wo',WW);renderW();toast('Reset.');}
 
-function openOv(id){document.getElementById(id).classList.add('show');}
-function closeOv(id){document.getElementById(id).classList.remove('show');}
-document.querySelectorAll('.ov').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show');}));
+function wmDelEx(day, id) {
+  WW[day] = (WW[day] || []).filter(e => e.id !== id);
+  sl('ax_ww', WW); cloudSave({ WW }); renderWMDayTabs(); renderWMDayContent(); renderWorkout(); showToast('삭제됐어요.');
+}
 
-let tt;
-function toast(msg,err=false){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1800);}
+function openWMAddEx(day) {
+  const di = DAYS.indexOf(day);
+  document.getElementById('addExDayLabel').textContent = DAYS_EN[di] + ' — 운동 추가';
+  document.getElementById('addExName').value = '';
+  document.getElementById('addExSets').value = '';
+  document.getElementById('addExReps').value = '';
+  openOv('ov-addEx');
+  document.querySelector('#ov-addEx .modal-btn.primary').onclick = () => doWMAddEx(day);
+}
 
-splash(()=>{if(sessionStorage.getItem('ok')==='1')init();});
+function doWMAddEx(day) {
+  const name = document.getElementById('addExName').value.trim();
+  const sets = parseInt(document.getElementById('addExSets').value) || 3;
+  const reps = parseInt(document.getElementById('addExReps').value) || 10;
+  if (!name) { showToast('이름을 입력하세요.', true); return; }
+  if (!WW[day]) WW[day] = [];
+  WW[day].push({ id: 'ex' + Date.now(), name, sets, reps });
+  sl('ax_ww', WW); cloudSave({ WW });
+  closeOv('ov-addEx');
+  document.querySelector('#ov-addEx .modal-btn.primary').onclick = doAddExercise;
+  renderWMDayTabs(); renderWMDayContent(); renderWorkout(); showToast('추가됐어요.');
+}
+
+// fallback for modal button
+function doAddExercise() { showToast('요일을 먼저 선택하세요.', true); }
+
+/* ─ WORKOUT LOG ─ */
+function loadLog(k) {
+  logKey = k; const lg = WL[k] || {};
+  document.querySelectorAll('.log-chip').forEach(c => c.classList.toggle('on', (lg.targets || []).includes(c.dataset.v)));
+  document.getElementById('logTime').value = lg.time || '';
+  document.querySelectorAll('.log-rate-btn').forEach(b => b.classList.toggle('on', b.dataset.v == lg.rating));
+  document.querySelectorAll('.log-cond-btn').forEach(b => b.classList.toggle('on', b.dataset.v === lg.cond));
+  document.getElementById('logMemo').value = lg.memo || '';
+  const d = new Date(k + 'T00:00:00');
+  document.getElementById('logTitle').textContent = fmtDisp(d) + ' Log';
+  renderPR();
+}
+function renderPR() {
+  const el = document.getElementById('prList'); el.innerHTML = '';
+  const ent = Object.entries(PR);
+  if (!ent.length) { el.innerHTML = '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:10px;color:#aaa;padding:10px 0">아직 PR이 없어요.</div>'; return; }
+  ent.forEach(([nm, pr]) => {
+    const row = document.createElement('div'); row.className = 'pr-row';
+    row.innerHTML = `<div class="pr-name">${nm}</div><div style="text-align:right"><div class="pr-val">${pr.weight}kg</div><div class="pr-date">${pr.date}</div></div>`;
+    el.appendChild(row);
+  });
+}
+function togChip(el) { el.classList.toggle('on'); }
+function selRate(el) { document.querySelectorAll('.log-rate-btn').forEach(b => b.classList.remove('on')); el.classList.add('on'); }
+function selCond(el) { document.querySelectorAll('.log-cond-btn').forEach(b => b.classList.remove('on')); el.classList.add('on'); }
+function saveLog() {
+  WL[logKey] = {
+    targets: [...document.querySelectorAll('.log-chip.on')].map(c => c.dataset.v),
+    time: document.getElementById('logTime').value,
+    rating: document.querySelector('.log-rate-btn.on')?.dataset.v || '',
+    cond: document.querySelector('.log-cond-btn.on')?.dataset.v || '',
+    memo: document.getElementById('logMemo').value.trim()
+  };
+  sl('ax_wl', WL); cloudSave({ WL }); renderWCal(); showToast('저장됐어요.');
+}
+
+/* ═══ BOTTOM BAR ═══ */
+function updateBottom() {
+  const rec = getRec(), done = RR.filter(r => rec[r.id]).length, tot = RR.length;
+  const pct = tot ? Math.round(done / tot * 100) : 0;
+  const msgs = ['Start your day','Keep going','Halfway done','Almost there','Promise kept'];
+  document.getElementById('bottomMsg').textContent = msgs[pct === 0 ? 0 : pct < 30 ? 1 : pct < 60 ? 2 : pct < 100 ? 3 : 4];
+  document.getElementById('bottomCount').textContent = `${done}/${tot}`;
+}
+
+/* ═══ PAGES & TABS ═══ */
+function goPage(p) {
+  document.getElementById('pgDaily').style.display   = p === 'daily'   ? 'block' : 'none';
+  document.getElementById('pgWorkout').style.display = p === 'workout' ? 'block' : 'none';
+  if (p === 'workout') renderWorkout();
+}
+function dTab(v, btn) {
+  document.querySelectorAll('#pgDaily .view').forEach(e => e.classList.remove('on'));
+  document.querySelectorAll('#pgDaily .tab-btn').forEach(e => e.classList.remove('on'));
+  const map = { today: 'vdToday', stats: 'vdStats', settings: 'vdSettings' };
+  document.getElementById(map[v]).classList.add('on'); btn.classList.add('on');
+  if (v === 'stats') renderDStats();
+}
+function wTab(v, btn) {
+  document.querySelectorAll('#pgWorkout .view').forEach(e => e.classList.remove('on'));
+  document.querySelectorAll('#pgWorkout .tab-btn').forEach(e => e.classList.remove('on'));
+  const map = { today: 'vwToday', cal: 'vwCal', manage: 'vwManage' };
+  document.getElementById(map[v]).classList.add('on'); btn.classList.add('on');
+  if (v === 'cal') { renderWCal(); loadLog(fmt(NOW)); }
+  if (v === 'manage') { renderWMDayTabs(); renderWMDayContent(); }
+}
+
+/* ═══ STATS ═══ */
+function pClass(p) { return p === 0 ? 'p0' : p < 30 ? 'p0' : p < 70 ? 'p30' : p < 100 ? 'p70' : 'p100'; }
+
+function calcStreak() {
+  let streak = 0, cur = 0, best = 0;
+  const d = new Date(NOW);
+  for (let i = 0; i < 365; i++) {
+    const k = fmt(d); const rec = DD[k];
+    const cnt = rec ? RR.filter(r => rec[r.id]).length : 0;
+    const pct = RR.length ? Math.round(cnt / RR.length * 100) : 0;
+    if (pct === 100) { cur++; if (cur > best) best = cur; if (i === 0 || streak === i) streak++; }
+    else { cur = 0; if (i > 0 && streak < i) { /* already broken */ } if (i > 0) break; }
+    d.setDate(d.getDate() - 1);
+  }
+  return { streak, best };
+}
+
+function renderDStats() {
+  const { streak, best } = calcStreak();
+  document.getElementById('streakNum').textContent = streak;
+  document.getElementById('streakMsg').textContent = streak > 0 ? `🔥 ${streak}일째 유지 중` : '오늘부터 시작하세요.';
+  document.getElementById('streakBest').textContent = `Best: ${best}일`;
+
+  // Calendar
+  const dim = new Date(statsY, statsM + 1, 0).getDate();
+  const fd  = new Date(statsY, statsM, 1).getDay();
+  const ts  = fmt(NOW);
+  const MONTHS = 'JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC'.split(',');
+  document.getElementById('dMoLabel').textContent = MONTHS[statsM] + ' ' + statsY;
+  const g = document.getElementById('dCal'); g.innerHTML = '';
+  for (let i = 0; i < fd; i++) { const c = document.createElement('div'); c.className = 'cc empty'; g.appendChild(c); }
+  for (let d = 1; d <= dim; d++) {
+    const k = `${statsY}-${p2(statsM+1)}-${p2(d)}`;
+    const c = document.createElement('div'); c.textContent = d;
+    if (k > ts) c.className = 'cc future';
+    else if (k === ts) c.className = 'cc today';
+    else { const rec = DD[k]; const cnt = rec ? Object.values(rec).filter(Boolean).length : 0; const pct = RR.length ? Math.round(cnt / RR.length * 100) : 0; c.className = 'cc ' + pClass(pct); }
+    g.appendChild(c);
+  }
+
+  // Weekly
+  const today = new Date(NOW), dow = (today.getDay() + 6) % 7;
+  const mon = new Date(today); mon.setDate(today.getDate() - dow);
+  let wDone = 0, wTot = 0, wWo = 0; const ic = {};
+  for (let i = 0; i < 7; i++) {
+    const d2 = new Date(mon); d2.setDate(mon.getDate() + i); if (d2 > today) break;
+    const k = fmt(d2); const rec = DD[k];
+    if (rec) RR.forEach(r => { if (rec[r.id]) { wDone++; ic[r.name] = (ic[r.name] || 0) + 1; } });
+    wTot += RR.length; if (WO[k]) wWo++;
+  }
+  const wPct = wTot ? Math.round(wDone / wTot * 100) : 0;
+  let bestItem = '', bestCnt = 0;
+  Object.entries(ic).forEach(([n, c]) => { if (c > bestCnt) { bestCnt = c; bestItem = n; } });
+  document.getElementById('weeklyGrid').innerHTML = `
+    <div class="weekly-cell"><div class="weekly-val">${wPct}%</div><div class="weekly-cell-label">달성률</div></div>
+    <div class="weekly-cell"><div class="weekly-val">${wWo}</div><div class="weekly-cell-label">운동일</div></div>
+    <div class="weekly-cell"><div class="weekly-val">${streak}</div><div class="weekly-cell-label">연속</div></div>`;
+  document.getElementById('weeklyBest').innerHTML = bestItem
+    ? `<div class="weekly-best-label">Best Item</div><div class="weekly-best-val">${bestItem} <span>${bestCnt}/7일</span></div>`
+    : '<div class="weekly-best-label">아직 기록이 없어요.</div>';
+
+  // Monthly stats
+  let tD = 0, pD = 0, tC = 0; const rc = {}; RR.forEach(r => rc[r.id] = 0);
+  for (let d = 1; d <= dim; d++) {
+    const k = `${statsY}-${p2(statsM+1)}-${p2(d)}`; if (k > ts) continue; tD++;
+    const rec = DD[k]; if (!rec) continue;
+    let cnt = 0; RR.forEach(r => { if (rec[r.id]) { rc[r.id]++; cnt++; tC++; } });
+    if (cnt === RR.length && RR.length) pD++;
+  }
+  const avg = tD && RR.length ? Math.round(tC / (tD * RR.length) * 100) : 0;
+  document.getElementById('dStatRows').innerHTML = `
+    <div class="stat-row"><div class="stat-label">Perfect Days</div><div class="stat-val">${pD} <small>days</small></div></div>
+    <div class="stat-row"><div class="stat-label">Avg. Rate</div><div class="stat-val">${avg} <small>%</small></div></div>
+    <div class="stat-row"><div class="stat-label">Total Checks</div><div class="stat-val">${tC} <small>times</small></div></div>`;
+  const bars = document.getElementById('dBars'); bars.innerHTML = '';
+  RR.forEach(r => { const pct = tD ? Math.round(rc[r.id] / tD * 100) : 0; bars.innerHTML += `<div class="bar-row"><div class="bar-name">${r.name}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><div class="bar-pct">${pct}%</div></div>`; });
+}
+function changeMo(n) { statsM += n; if (statsM < 0) { statsM = 11; statsY--; } if (statsM > 11) { statsM = 0; statsY++; } renderDStats(); }
+
+/* WORKOUT CALENDAR */
+function renderWCal() {
+  const dim = new Date(workoutCalY, workoutCalM + 1, 0).getDate();
+  const fd  = new Date(workoutCalY, workoutCalM, 1).getDay();
+  const MONTHS = 'JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC'.split(',');
+  document.getElementById('wMoLabel').textContent = MONTHS[workoutCalM] + ' ' + workoutCalY;
+  const ts = fmt(NOW), g = document.getElementById('wCal'); g.innerHTML = '';
+  for (let i = 0; i < fd; i++) { const c = document.createElement('div'); c.className = 'cc empty'; g.appendChild(c); }
+  for (let d = 1; d <= dim; d++) {
+    const k = `${workoutCalY}-${p2(workoutCalM+1)}-${p2(d)}`;
+    const c = document.createElement('div'); c.textContent = d;
+    if (k > ts) c.className = 'cc future';
+    else if (k === ts) c.className = 'cc today';
+    else c.className = 'cc' + (WO[k] ? ' trained' : ' p0');
+    if (k <= ts) c.onclick = () => loadLog(k);
+    g.appendChild(c);
+  }
+}
+function changeWMo(n) { workoutCalM += n; if (workoutCalM < 0) { workoutCalM = 11; workoutCalY--; } if (workoutCalM > 11) { workoutCalM = 0; workoutCalY++; } renderWCal(); }
+
+/* ═══ WEEKLY / MONTHLY POPUPS ═══ */
+function checkWeeklyPopup() {
+  const dow = NOW.getDay();
+  if (dow !== 0 && dow !== 6) return;
+  const k = fmt(NOW); if (weeklyShownKey === k) return;
+  const today = new Date(NOW), dow2 = (today.getDay() + 6) % 7;
+  const mon = new Date(today); mon.setDate(today.getDate() - dow2);
+  let wDone = 0, wTot = 0, wWo = 0; const ic = {};
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(mon); d.setDate(mon.getDate() + i); if (d > today) break;
+    const key = fmt(d); const rec = DD[key];
+    if (rec) RR.forEach(r => { if (rec[r.id]) { wDone++; ic[r.name] = (ic[r.name] || 0) + 1; } });
+    wTot += RR.length; if (WO[key]) wWo++;
+  }
+  if (!wTot) return;
+  weeklyShownKey = k; sl('ax_wsk', k);
+  const { streak } = calcStreak();
+  const wPct = wTot ? Math.round(wDone / wTot * 100) : 0;
+  let bi = '', bc = 0; Object.entries(ic).forEach(([n, c]) => { if (c > bc) { bc = c; bi = n; } });
+  document.getElementById('wpTag').textContent = 'Weekly Review';
+  document.getElementById('wpGrid').innerHTML = `
+    <div class="popup-cell"><div class="popup-cell-val">${wPct}%</div><div class="popup-cell-label">달성률</div></div>
+    <div class="popup-cell"><div class="popup-cell-val">${wWo}</div><div class="popup-cell-label">운동일</div></div>
+    <div class="popup-cell"><div class="popup-cell-val">${streak}</div><div class="popup-cell-label">연속</div></div>`;
+  document.getElementById('wpBest').innerHTML = bi ? `<div class="weekly-best-label">Best Item</div><div class="popup-best-val">${bi} <span>${bc}/7일</span></div>` : '<div class="weekly-best-label">계속 기록해요!</div>';
+  setTimeout(() => document.getElementById('weekly-popup').classList.add('show'), 1200);
+}
+
+function checkMonthlyPopup() {
+  if (NOW.getDate() !== 1) return;
+  const k = `${NOW.getFullYear()}-${p2(NOW.getMonth())}`;
+  if (monthlyShownKey === k) return;
+  const pm = NOW.getMonth() === 0 ? 11 : NOW.getMonth() - 1;
+  const py = NOW.getMonth() === 0 ? NOW.getFullYear() - 1 : NOW.getFullYear();
+  const dim = new Date(py, pm + 1, 0).getDate();
+  let tD = 0, pD = 0, tC = 0, wWo = 0;
+  for (let d = 1; d <= dim; d++) {
+    const key = `${py}-${p2(pm+1)}-${p2(d)}`; tD++;
+    const rec = DD[key]; if (!rec) continue;
+    let cnt = 0; RR.forEach(r => { if (rec[r.id]) { cnt++; tC++; } });
+    if (cnt === RR.length && RR.length) pD++; if (WO[key]) wWo++;
+  }
+  if (!tD) return;
+  monthlyShownKey = k; sl('ax_msk', k);
+  const avg = tD && RR.length ? Math.round(tC / (tD * RR.length) * 100) : 0;
+  const MONTHS = 'JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC'.split(',');
+  document.getElementById('mpTag').textContent = `Monthly Review · ${MONTHS[pm]}`;
+  document.getElementById('mpGrid').innerHTML = `
+    <div class="popup-cell"><div class="popup-cell-val">${avg}%</div><div class="popup-cell-label">달성률</div></div>
+    <div class="popup-cell"><div class="popup-cell-val">${pD}</div><div class="popup-cell-label">완벽한 날</div></div>
+    <div class="popup-cell"><div class="popup-cell-val">${wWo}</div><div class="popup-cell-label">운동일</div></div>`;
+  document.getElementById('mpBest').innerHTML = `<div class="weekly-best-label">총 체크인</div><div class="popup-best-val">${tC}회 <span>완료</span></div>`;
+  setTimeout(() => document.getElementById('monthly-popup').classList.add('show'), 1500);
+}
+
+/* ═══ BACKUP ═══ */
+function doExport() {
+  document.getElementById('exportText').value = JSON.stringify({ DD, WL, RR, RC, WW, SD, WO, PR, REST_DAYS, userName, userAge, v: 4 }, null, 2);
+  openOv('ov-export');
+}
+function copyExport() {
+  const t = document.getElementById('exportText'); t.select();
+  try { document.execCommand('copy'); } catch { navigator.clipboard?.writeText(t.value); }
+  showToast('복사됐어요!');
+}
+function doImport() {
+  try {
+    const d = JSON.parse(document.getElementById('importText').value);
+    if (d.DD) { DD = d.DD; sl('ax_dd', DD); }
+    if (d.WL) { WL = d.WL; sl('ax_wl', WL); }
+    if (d.RR) { RR = d.RR; sl('ax_rr', RR); }
+    if (d.RC) { RC = d.RC; sl('ax_rc', RC); }
+    if (d.WW) { WW = d.WW; sl('ax_ww', WW); }
+    if (d.SD) { SD = d.SD; sl('ax_sd', SD); }
+    if (d.WO) { WO = d.WO; sl('ax_wo', WO); }
+    if (d.PR) { PR = d.PR; sl('ax_pr', PR); }
+    if (d.REST_DAYS) { REST_DAYS = d.REST_DAYS; sl('ax_rest', REST_DAYS); }
+    if (d.userName) { userName = d.userName; sl('ax_name', userName); }
+    if (d.userAge)  { userAge  = d.userAge;  sl('ax_age', userAge); }
+    closeOv('ov-import'); renderRoutine(); renderWorkout(); updateBottom(); updateHeaders();
+    showToast('가져왔어요!');
+  } catch { showToast('잘못된 형식이에요.', true); }
+}
+function resetAll() { if (confirm('모든 데이터를 초기화할까요?')) { localStorage.clear(); location.reload(); } }
+
+/* ═══ MODALS & OVERLAYS ═══ */
+function openOv(id) { document.getElementById(id).classList.add('show'); }
+function closeOv(id) { document.getElementById(id).classList.remove('show'); }
+
+/* ═══ TOAST ═══ */
+let toastTimer;
+function showToast(msg, err = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'show' + (err ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+/* ═══ BOOT ═══ */
+runSplash(() => {
+  const offline = gl('ax_offline', false);
+  if (!window._fbUser && !offline) {
+    document.getElementById('login').classList.add('show');
+  } else {
+    checkOnboard();
+  }
+});
 </script>
 
 </body>
